@@ -29,6 +29,14 @@ private:
     // access the processor object that created it.
    clarinetPluginAudioProcessor& audioProcessor;
 
-    juce::Slider midiVolume;
+   juce::Slider midiVolumeSlider;
+   juce::Slider pressureSlider;
+   juce::Slider breathCutoffSlider;
+   juce::Slider breathGainSlider;
+
+   juce::Label volumeLabel;
+   juce::Label pressureLabel;
+   juce::Label breathCutoffLabel;
+   juce::Label breathGainLabel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessorEditor)
 };

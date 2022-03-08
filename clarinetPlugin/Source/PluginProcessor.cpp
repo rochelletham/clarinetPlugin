@@ -24,10 +24,13 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
                        )
 #endif
 {
+   // indicates that we want to start the Faust audio engine
+   dspFaust.start();
 }
 
 clarinetPluginAudioProcessor::~clarinetPluginAudioProcessor()
 {
+   dspFaust.stop();
 }
 
 //==============================================================================
@@ -93,31 +96,38 @@ void clarinetPluginAudioProcessor::changeProgramName (int index, const juce::Str
 }
 
 //==============================================================================
-/**
- Callback function that tells the source to prepare for playing.
- @param samplesPerBlockExpected   the number of samples that the source will be
-                                  expected to supply each time its
-                                  getNextAudioBlock() method is called.
- @param sampleRate   the sample rate that the output will be used at
- */
 void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-   dspFaust = new DspFaust(sampleRate, samplesPerBlock);
-   faustUI = new MapUI();
-   dspFaust->buildUserInterface(faustUI);
+//   dspFaust = new DspFaust();
+//   faustUI = new MapUI();
+//   dspFaust->buildUserInterface(faustUI);
+//   outputs = new float* [2];
+//   for (int channel = 0; channel < 2; ++channel) {
+//      outputs[channel] = new float[samplesPerBlock];
+//   }
 }
 
-/**
- When playback stops, free up any spare memory, etc.
- */
+
 void clarinetPluginAudioProcessor::releaseResources()
 {
-   delete dspFaust;
-   dspFaust = NULL;
-   delete faustUI;
-   faustUI = NULL;
+//   if (dspFaust != NULL) {
+//      delete dspFaust;
+//      dspFaust = NULL;
+//   }
+//   if (faustUI != NULL) {
+//      delete faustUI;
+//      faustUI = NULL;
+//   }
+//   if (outputs != NULL) {
+//      for (int channel = 0; channel < 2; ++channel) {
+//         delete[] outputs[channel];
+//         outputs[channel] = NULL;
+//      }
+//      delete[] outputs;
+//   }
+   std::cout << "released resources" <<std::endl;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -148,31 +158,22 @@ bool clarinetPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 
 void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
+//    juce::ScopedNoDenormals noDenormals;
+//    auto totalNumInputChannels  = getTotalNumInputChannels();
+//    auto totalNumOutputChannels = getTotalNumOutputChannels();
+//
+////   dspFaust->compute((int) buffer.getNumSamples(), NULL, outputs);
+//
+//    // plugin's audio processing handled here
+//    // Make sure to reset the state if inner loop is processing
+//    // the samples and the outer loop is handling the channels
+//   // process every channel of data
+//   for (int channel = 0; channel < buffer.getNumChannels(); ++channel) {
+//      // for every channel, we need to use the buffer audio data
+//      for (int i = 0; i < buffer.getNumSamples(); ++i) {
+//         *buffer.getWritePointer(channel,i) = outputs[channel][i];
+//      }
+//   }
 }
 
 //==============================================================================
@@ -200,7 +201,24 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
     // whose contents will have been created by the getStateInformation() call.
 //   fUI->setParamValue("cutoff",cutoff);
 }
-
+//========================faust parameter functions=============================
+void clarinetPluginAudioProcessor::setPressure(float pressure) {
+   dspFaust.setParamValue("/clarinet/blower/pressure", pressure);
+}
+void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
+   dspFaust.setParamValue("/clarinet/blower/breathGain", breathGain);
+}
+void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
+   dspFaust.setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
+}
+//void setVibratoFreq(float vibratoFreq) {
+//   dspFaust->setParamValue("/clarinet/blower/pressure", pressure);
+//}
+//void setVibratoGain(float vibratoGain);
+//void setTubeLength(float tubeLength);
+//void setReedStiffness(float reedStiffness);
+//void setBellOpening(float bellOpening);
+//void setOutGain(float outGain);
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

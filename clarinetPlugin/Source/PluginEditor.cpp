@@ -8,22 +8,34 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "dsp-faust/DspFaust.h"
 
 //==============================================================================
 clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
    // This is where our plugin’s editor size is set.
-   setSize (200, 200);
-   midiVolume.setSliderStyle (juce::Slider::LinearBarVertical);
-   midiVolume.setRange(0, 127, 1);
-   midiVolume.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
-   midiVolume.setPopupDisplayEnabled (true, false, this);
-   midiVolume.setTextValueSuffix (" Volume");
-   midiVolume.setValue(1);
-
+   setSize (500, 200);
+   midiVolumeSlider.setSliderStyle (juce::Slider::LinearBarVertical);
+   midiVolumeSlider.setRange(0, 127, 1);
+   midiVolumeSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
+   midiVolumeSlider.setPopupDisplayEnabled (true, false, this);
+   midiVolumeSlider.setTextValueSuffix (" Volume");
+   midiVolumeSlider.setValue(1);
    // makes midiVolume slider visible in window
-   addAndMakeVisible (&midiVolume);
+   addAndMakeVisible (&midiVolumeSlider);
+
+   addAndMakeVisible(pressureSlider);
+   pressureSlider.setRange(0.0, 1.0);
+   pressureSlider.setValue(0.5);
+   // update the pressure value whenever the slider changes
+   pressureSlider.onValueChange = [this] {
+      audioProcessor.setPressure(pressureSlider.getValue());
+   };
+
+   addAndMakeVisible(pressureLabel);
+   pressureLabel.setText ("Pressure", dontSendNotification);
+   pressureLabel.attachToComponent (&pressureSlider, true);
 }
 
 clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
@@ -38,12 +50,14 @@ void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
    g.setColour (juce::Colours::blue);
    g.setFont (15.0f);
    g.drawFittedText ("Midi Volume", 0,0, getWidth(), 30, juce::Justification::centred, 1);
+
 }
 
 void clarinetPluginAudioProcessorEditor::resized()
 {
-   // This is generally where you'll want to lay out the positions of any
-   // subcomponents in your editor..
-   //(x, y, width, height)
-   midiVolume.setBounds (40, 30, 20, getHeight() - 60);
+
+//   midiVolumeSlider.setBounds (40, 30, 20, getHeight() - 60);
+   const int leftMargin = 80;
+   midiVolumeSlider.setBounds(leftMargin, 10, getWidth() - leftMargin - 20, 20);
+   pressureSlider.setBounds(leftMargin, 40, getWidth() - leftMargin - 20, 20);
 }
