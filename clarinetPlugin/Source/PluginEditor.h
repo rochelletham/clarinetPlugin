@@ -33,10 +33,23 @@ private:
    juce::Slider pressureSlider;
    juce::Slider breathCutoffSlider;
    juce::Slider breathGainSlider;
+   juce::Slider vibratoFreqSlider;
+   juce::Slider vibratoGainSlider;
+   juce::Slider clarinetLenSlider;
+   juce::Slider reedStiffnessSlider;
+   juce::Slider bellOpeningSlider;
+   juce::Slider outGainSlider;
+
 
    juce::Label volumeLabel;
    juce::Label pressureLabel;
    juce::Label breathCutoffLabel;
    juce::Label breathGainLabel;
+   juce::Label vibratoFreqLabel;
+   juce::Label vibratoGainLabel;
+   juce::Label clarinetLenLabel;
+   juce::Label reedStiffnessLabel;
+   juce::Label bellOpeningLabel;
+   juce::Label outGainLabel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessorEditor)
 };

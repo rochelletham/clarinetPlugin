@@ -162,7 +162,7 @@ void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 //    auto totalNumInputChannels  = getTotalNumInputChannels();
 //    auto totalNumOutputChannels = getTotalNumOutputChannels();
 //
-////   dspFaust->compute((int) buffer.getNumSamples(), NULL, outputs);
+//   dspFaust->compute((int) buffer.getNumSamples(), NULL, outputs);
 //
 //    // plugin's audio processing handled here
 //    // Make sure to reset the state if inner loop is processing
@@ -199,7 +199,6 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-//   fUI->setParamValue("cutoff",cutoff);
 }
 //========================faust parameter functions=============================
 void clarinetPluginAudioProcessor::setPressure(float pressure) {
@@ -211,14 +210,26 @@ void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
 void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
    dspFaust.setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
 }
-//void setVibratoFreq(float vibratoFreq) {
-//   dspFaust->setParamValue("/clarinet/blower/pressure", pressure);
-//}
-//void setVibratoGain(float vibratoGain);
-//void setTubeLength(float tubeLength);
-//void setReedStiffness(float reedStiffness);
-//void setBellOpening(float bellOpening);
-//void setOutGain(float outGain);
+
+void clarinetPluginAudioProcessor::setVibratoFreq(float vibratoFreq) {
+   dspFaust.setParamValue("/clarinet/blower/pressure", vibratoFreq);
+}
+void clarinetPluginAudioProcessor::setVibratoGain(float vibratoGain) {
+   dspFaust.setParamValue("/clarinet/blower/vibratoFreq", vibratoGain);
+}
+
+void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
+   dspFaust.setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
+}
+void clarinetPluginAudioProcessor::setReedStiffness(float reedStiffness) {
+   dspFaust.setParamValue("/clarinet/clarinetModel/reedStiffness", reedStiffness);
+}
+void clarinetPluginAudioProcessor::setBellOpening(float bellOpening) {
+   dspFaust.setParamValue("/clarinet/clarinetModel/bellOpening", bellOpening);
+}
+void clarinetPluginAudioProcessor::setOutGain(float outGain) {
+   dspFaust.setParamValue("/clarinet/clarinetModel/outGain", outGain);
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

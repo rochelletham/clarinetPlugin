@@ -87,12 +87,12 @@ public:
     void setPressure(float pressure);
     void setBreathGain(float breathGain);
     void setBreathCutoff(float breathCutoff);
-//    void setVibratoFreq(float vibratoFreq); // will need to rename this..
-//    void setVibratoGain(float vibratoGain);
-//    void setTubeLength(float tubeLength);
-//    void setReedStiffness(float reedStiffness);
-//    void setBellOpening(float bellOpening);
-//    void setOutGain(float outGain);
+    void setVibratoFreq(float vibratoFreq); // will need to rename this..
+    void setVibratoGain(float vibratoGain);
+    void setTubeLength(float tubeLength);
+    void setReedStiffness(float reedStiffness);
+    void setBellOpening(float bellOpening);
+    void setOutGain(float outGain);
 
 private:
    MapUI* faustUI;      // controls faust dsp parameters
