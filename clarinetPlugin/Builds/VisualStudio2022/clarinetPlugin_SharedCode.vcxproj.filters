@@ -448,6 +448,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\MainApplication.cpp">
+      <Filter>clarinetPlugin\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MainWindow.cpp">
+      <Filter>clarinetPlugin\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
       <Filter>clarinetPlugin\Source</Filter>
     </ClCompile>
@@ -2562,6 +2568,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\MainApplication.h">
+      <Filter>clarinetPlugin\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MainWindow.h">
+      <Filter>clarinetPlugin\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
       <Filter>clarinetPlugin\Source</Filter>
     </ClInclude>
