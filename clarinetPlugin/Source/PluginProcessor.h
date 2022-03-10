@@ -87,13 +87,23 @@ public:
     void setPressure(float pressure);
     void setBreathGain(float breathGain);
     void setBreathCutoff(float breathCutoff);
-    void setVibratoFreq(float vibratoFreq); // will need to rename this..
+    void setVibratoFreq(float vibratoFreq); // TODO: will need to rename this..
     void setVibratoGain(float vibratoGain);
     void setTubeLength(float tubeLength);
     void setReedStiffness(float reedStiffness);
     void setBellOpening(float bellOpening);
     void setOutGain(float outGain);
 
+   float getPressure();
+   float getBreathGain();
+   float getBreathCutoff();
+   float getVibratoFreq();
+   float getVibratoGain();
+   float getTubeLength();
+   float getReedStiffness();
+   float getBellOpening();
+   float getOutGain();
+   }
 private:
    MapUI* faustUI;      // controls faust dsp parameters
    DspFaust dspFaust;  // contains audio/DSP callback for clarinet API

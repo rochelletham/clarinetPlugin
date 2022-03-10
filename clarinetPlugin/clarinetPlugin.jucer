@@ -4,6 +4,12 @@
               pluginFormats="buildAU,buildAUv3,buildVST3" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn">
   <MAINGROUP id="VH7Bpl" name="clarinetPlugin">
     <GROUP id="{98B9B5FD-F8EB-9DA0-49C7-93CA6B7BED78}" name="Source">
+      <FILE id="gfYSq5" name="MainApplication.cpp" compile="1" resource="0"
+            file="Source/MainApplication.cpp"/>
+      <FILE id="OSu4Av" name="MainApplication.h" compile="0" resource="0"
+            file="Source/MainApplication.h"/>
+      <FILE id="ZMEYik" name="MainWindow.cpp" compile="1" resource="0" file="Source/MainWindow.cpp"/>
+      <FILE id="yCRcbM" name="MainWindow.h" compile="0" resource="0" file="Source/MainWindow.h"/>
       <FILE id="IM6IfY" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="rkercP" name="PluginProcessor.h" compile="0" resource="0"

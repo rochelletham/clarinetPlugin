@@ -28,7 +28,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
    clarinetPluginAudioProcessor& audioProcessor;
-
+   juce::LookAndFeel_V4 otherLookAndFeel;
    juce::Slider midiVolumeSlider;
    juce::Slider pressureSlider;
    juce::Slider breathCutoffSlider;
@@ -40,7 +40,8 @@ private:
    juce::Slider bellOpeningSlider;
    juce::Slider outGainSlider;
 
-
+   // TODO: change this to button later
+   juce::Label audioSettingsButton;
    juce::Label volumeLabel;
    juce::Label pressureLabel;
    juce::Label breathCutoffLabel;
@@ -51,5 +52,15 @@ private:
    juce::Label reedStiffnessLabel;
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
+
+   float kPressureDEF = 0.0;
+   float kBreathGainDEF = 0.1;
+   float kBreathCutoffDEF = 2000;
+   float kVibratoFreqDEF = 5.0;
+   float kVibratoGainDEF = 0.25;
+   float kClarinetLenDEF = 0.8;
+   float kReedStiffDEF = 0.5;
+   float kBellOpeningDEF = 0.5;
+   float kOutGainDEF = 0.0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessorEditor)
 };

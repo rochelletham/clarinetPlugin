@@ -200,7 +200,7 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
-//========================faust parameter functions=============================
+//========================faust set parameter functions=============================
 void clarinetPluginAudioProcessor::setPressure(float pressure) {
    dspFaust.setParamValue("/clarinet/blower/pressure", pressure);
 }
@@ -212,10 +212,10 @@ void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
 }
 
 void clarinetPluginAudioProcessor::setVibratoFreq(float vibratoFreq) {
-   dspFaust.setParamValue("/clarinet/blower/pressure", vibratoFreq);
+   dspFaust.setParamValue("/clarinet/blower/vibratoFreq", vibratoFreq);
 }
 void clarinetPluginAudioProcessor::setVibratoGain(float vibratoGain) {
-   dspFaust.setParamValue("/clarinet/blower/vibratoFreq", vibratoGain);
+   dspFaust.setParamValue("/clarinet/blower/vibratoGain", vibratoGain);
 }
 
 void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
@@ -229,6 +229,35 @@ void clarinetPluginAudioProcessor::setBellOpening(float bellOpening) {
 }
 void clarinetPluginAudioProcessor::setOutGain(float outGain) {
    dspFaust.setParamValue("/clarinet/clarinetModel/outGain", outGain);
+}
+
+//========================faust get parameter functions=============================
+float clarinetPluginAudioProcessor::getPressure() {
+   return dspFaust.getParamValue("/clarinet/blower/pressure");
+}
+float clarinetPluginAudioProcessor::getBreathGain() {
+   return dspFaust.getParamValue("/clarinet/blower/breathGain");
+}
+float clarinetPluginAudioProcessor::getBreathCutoff() {
+   return dspFaust.getParamValue("/clarinet/blower/breathCutoff");
+}
+float clarinetPluginAudioProcessor::getVibratoFreq() {
+   return dspFaust.getParamValue("/clarinet/blower/vibratoFreq");
+}
+float clarinetPluginAudioProcessor::getVibratoGain() {
+   return dspFaust.getParamValue("/clarinet/blower/vibratoGain");
+}
+float clarinetPluginAudioProcessor::getTubeLength() {
+   return dspFaust.getParamValue("/clarinet/clarinetModel/tubeLength");
+}
+float clarinetPluginAudioProcessor::getReedStiffness() {
+   return dspFaust.getParamValue("/clarinet/clarinetModel/reedStiffness");
+}
+float clarinetPluginAudioProcessor::getBellOpening() {
+   return dspFaust.getParamValue("/clarinet/clarinetModel/bellOpening");
+}
+float clarinetPluginAudioProcessor::getOutGain() {
+   return dspFaust.getParamValue("/clarinet/clarinetModel/outGain");
 }
 //==============================================================================
 // This creates new instances of the plugin..
