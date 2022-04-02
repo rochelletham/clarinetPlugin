@@ -112,14 +112,6 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
 void clarinetPluginAudioProcessor::releaseResources()
 {
-//   if (dspFaust != NULL) {
-//      delete dspFaust;
-//      dspFaust = NULL;
-//   }
-//   if (faustUI != NULL) {
-//      delete faustUI;
-//      faustUI = NULL;
-//   }
 //   if (outputs != NULL) {
 //      for (int channel = 0; channel < 2; ++channel) {
 //         delete[] outputs[channel];

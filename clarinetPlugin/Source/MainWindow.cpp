@@ -52,15 +52,11 @@ MainWindow::MainWindow(String name)
 }
 
 MainWindow::~MainWindow() {
+   
 }
 
 //==============================================================================
 // DocumentWindow overrides
-/*
- This is called when the user tries to close this window.
- Here, we'll just ask the app to quit when this happens,
- but you can change this to do whatever you need.
- */
 void MainWindow::closeButtonPressed() {
   // when the main window is closed signal the app to exit
   JUCEApplication::getInstance()->systemRequestedQuit();

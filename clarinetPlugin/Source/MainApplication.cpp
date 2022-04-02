@@ -21,33 +21,7 @@ MainApplication& MainApplication::getApp() {
  be deleted when the unique pointer goes out of scope.
  */
 void MainApplication::closeAllAlertAndDialogWindows() {
-  // delete any open alert or dialog windows.
-  //   auto* ptr = dynamic_cast<MainWindow*>(this->getInstance());
-  //   ptr = std::make_unique<MainWindow*>();
-   std::vector<std::unique_ptr<AlertWindow>> openAlerts;
-   std::vector<std::unique_ptr<DialogWindow>> openDialog;
-
-//   for (auto i = 0; i < Desktop::getInstance().getNumComponents(); ++i) {
-//      if (auto a = dynamic_cast<AlertWindow>(Desktop::getInstance().getComponent(i)) {
-//         openAlerts.push_back(std::unique_ptr<AlertWindow>(a));
-//      }
-//   }
-//   for (auto i = 0; i < Desktop::getInstance().getNumComponents(); ++i) {
-//      if (auto a = dynamic_cast<DialogWindow>(Desktop::getInstance().getComponent(i))) {
-//         openDialog.push_back(std::unique_ptr<DialogWindow>(a));
-//      }
-//   }
-// delete any open alert or dialog windows. 
-//
-//   std::vector<std::unique_ptr<AlertWindow>> alerts; 
-//
-//   std::vector<std::unique_ptr<DialogWindow>> dialogs;
-//   Desktop& dt = Desktop::getInstance(); 
-//
-//   for(auto i = 0; i < dt.getNumComponents(); i++) 
-//
-//      if (AlertWindow* aw = dynamic_cast<AlertWindow*>(dt.getComponent(i))) 
-
+  
 }
 
 //==============================================================================

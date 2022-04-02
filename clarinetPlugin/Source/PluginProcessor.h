@@ -103,7 +103,7 @@ public:
    float getReedStiffness();
    float getBellOpening();
    float getOutGain();
-   }
+
 private:
    MapUI* faustUI;      // controls faust dsp parameters
    DspFaust dspFaust;  // contains audio/DSP callback for clarinet API

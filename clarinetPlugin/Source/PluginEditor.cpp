@@ -5,14 +5,13 @@
 
   ==============================================================================
 */
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "dsp-faust/DspFaust.h"
 
 //==============================================================================
 clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), audioVisualizer(2)
 {
    // This is where our plugin’s editor size is set.
    setSize (780, 500);
@@ -47,7 +46,7 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
 
    addAndMakeVisible(&breathCutoffSlider);
    breathCutoffSlider.setSliderStyle(Slider::LinearVertical);
-   breathCutoffSlider.setRange(0.0, 20000.0);
+   breathCutoffSlider.setRange(20.0, 20000.0);
    breathCutoffSlider.setValue(kBreathCutoffDEF);
    breathCutoffSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
@@ -179,6 +178,7 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
    outGainLabel.setText ("Gain", dontSendNotification);
    outGainLabel.attachToComponent (&outGainSlider, true);
    outGainLabel.setJustificationType(Justification::bottom);
+   addAndMakeVisible(audioVisualizer);
 }
 
 clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
@@ -201,6 +201,9 @@ void clarinetPluginAudioProcessorEditor::resized()
    auto lineOne = area.removeFromTop(24);
    auto lineTwo = area.removeFromTop(32);
 
+   auto visualSpace = area.removeFromBottom(150).removeFromLeft(600);
+   visualSpace.reduce(20,5);
+   audioVisualizer.setBounds(visualSpace);
    //TODO: Implement audio settings button
    audioSettingsButton.setBounds(lineOne.removeFromLeft(118));
    lineOne.removeFromLeft(8);
@@ -225,7 +228,4 @@ void clarinetPluginAudioProcessorEditor::resized()
    clarinetLenSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
    bellOpeningSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
    reedStiffnessSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
-
-
-
 }

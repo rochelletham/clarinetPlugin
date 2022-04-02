@@ -53,6 +53,9 @@ private:
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
 
+   /// A specialized JUCE component that displays a wave form.
+   AudioVisualiserComponent audioVisualizer;
+
    float kPressureDEF = 0.0;
    float kBreathGainDEF = 0.1;
    float kBreathCutoffDEF = 2000;
