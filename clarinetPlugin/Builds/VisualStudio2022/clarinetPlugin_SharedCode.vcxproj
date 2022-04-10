@@ -137,11 +137,10 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\MainApplication.cpp"/>
-    <ClCompile Include="..\..\Source\MainWindow.cpp"/>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp"/>
     <ClCompile Include="..\..\Source\PluginEditor.cpp"/>
     <ClCompile Include="..\..\Source\dsp-faust\DspFaust.cpp"/>
+    <ClCompile Include="..\..\Source\clarinetMIDI.cpp"/>
     <ClCompile Include="C:\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2097,8 +2096,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\MainApplication.h"/>
-    <ClInclude Include="..\..\Source\MainWindow.h"/>
     <ClInclude Include="..\..\Source\PluginProcessor.h"/>
     <ClInclude Include="..\..\Source\PluginEditor.h"/>
     <ClInclude Include="..\..\Source\FaustSynth.h"/>

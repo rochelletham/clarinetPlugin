@@ -5,12 +5,10 @@
 
   ==============================================================================
 */
-
+#include "ClarinetPhysModMidi.h"
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "FaustSynth.h"
-#include "dsp-faust/DspFaust.h"
-
+using namespace std;
 //==============================================================================
 clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -24,13 +22,11 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
                        )
 #endif
 {
-   // indicates that we want to start the Faust audio engine
-   dspFaust.start();
+   
 }
 
 clarinetPluginAudioProcessor::~clarinetPluginAudioProcessor()
 {
-   dspFaust.stop();
 }
 
 //==============================================================================
@@ -98,28 +94,37 @@ void clarinetPluginAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-//   dspFaust = new DspFaust();
-//   faustUI = new MapUI();
-//   dspFaust->buildUserInterface(faustUI);
-//   outputs = new float* [2];
+//   fDSP = new mydsp();
+//   fDSP->init(sampleRate);
+//   fUI = new MapUI();
+//   fDSP->buildUserInterface(fUI);
+//   outputs = new float*[2];
 //   for (int channel = 0; channel < 2; ++channel) {
 //      outputs[channel] = new float[samplesPerBlock];
 //   }
-}
+   //   fDSP = make_unique<dsp>();
+   //   fUI = make_unique<MapUI>();
 
+   fDSP = new mydsp();
+   fDSP->init(sampleRate);
+   fUI = new MapUI();
+   // TODO: no viable conversion from unique_ptr<MapUI> to UI *
+   fDSP->buildUserInterface(fUI);
+   outputs = new float*[2];
+   for (int channel = 0; channel < 2; ++channel) {
+      outputs[channel] = new float[samplesPerBlock];
+   }
+
+}
 
 void clarinetPluginAudioProcessor::releaseResources()
 {
-//   if (outputs != NULL) {
-//      for (int channel = 0; channel < 2; ++channel) {
-//         delete[] outputs[channel];
-//         outputs[channel] = NULL;
-//      }
-//      delete[] outputs;
-//   }
-   std::cout << "released resources" <<std::endl;
+   delete fDSP;
+   delete fUI;
+   for (int channel = 0; channel < 2; ++channel) {
+      delete[] outputs[channel];
+   }
+   delete [] outputs;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -154,15 +159,34 @@ void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-   dspFaust->compute((int) buffer.getNumSamples(), NULL, outputs);
+    // In case we have more outputs than inputs, this code clears any output
+    // channels that didn't contain input data, (because these aren't
+    // guaranteed to be empty - they may contain garbage).
+    // This is here to avoid people getting screaming feedback
+    // when they first compile a plugin, but obviously you don't need to keep
+    // this code if your algorithm always overwrites all the output channels.
+    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+        buffer.clear (i, 0, buffer.getNumSamples());
 
-    // plugin's audio processing handled here
-    // Make sure to reset the state if inner loop is processing
-    // the samples and the outer loop is handling the channels
-   // process every channel of data
-   for (int channel = 0; channel < buffer.getNumChannels(); ++channel) {
-      // for every channel, we need to use the buffer audio data
-      for (int i = 0; i < buffer.getNumSamples(); ++i) {
+    // This is the place where you'd normally do the guts of your plugin's
+    // audio processing...
+    // Make sure to reset the state if your inner loop is processing
+    // the samples and the outer loop is handling the channels.
+    // Alternatively, you can process the samples with the channels
+    // interleaved by keeping the same state.
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* channelData = buffer.getWritePointer (channel);
+
+        // ..do something to the data...
+    }
+
+   // compute one audio block of size buffer.getNumSamples and store in outputs
+   fDSP->compute(buffer.getNumSamples(), NULL, outputs);
+
+   for (int channel = 0; channel < totalNumOutputChannels; ++channel) {
+      for (int i = 0; i < buffer.getNumSamples(); i++) {
+         // link outputs to the audio output of processBlock
          *buffer.getWritePointer(channel,i) = outputs[channel][i];
       }
    }
@@ -176,7 +200,7 @@ bool clarinetPluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* clarinetPluginAudioProcessor::createEditor()
 {
-   return new clarinetPluginAudioProcessorEditor (*this);
+    return new clarinetPluginAudioProcessorEditor (*this);
 }
 
 //==============================================================================
@@ -192,65 +216,77 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }
+
 //========================faust set parameter functions=============================
-void clarinetPluginAudioProcessor::setPressure(float pressure) {
-   dspFaust.setParamValue("/clarinet/blower/pressure", pressure);
-}
-void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
-   dspFaust.setParamValue("/clarinet/blower/breathGain", breathGain);
-}
-void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
-   dspFaust.setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
-}
+//void clarinetPluginAudioProcessor::setPressure(float pressure) {
+//   fUI->setParamValue("/clarinet/blower/pressure", pressure);
+//}
+//void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
+//   fUI->setParamValue("/clarinet/blower/breathGain", breathGain);
+//}
+//void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
+//   fUI->setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
+//}
 
 void clarinetPluginAudioProcessor::setVibratoFreq(float vibratoFreq) {
-   dspFaust.setParamValue("/clarinet/blower/vibratoFreq", vibratoFreq);
+   fUI->setParamValue("/clarinet/otherParams/vibratoFreq", vibratoFreq);
 }
 void clarinetPluginAudioProcessor::setVibratoGain(float vibratoGain) {
-   dspFaust.setParamValue("/clarinet/blower/vibratoGain", vibratoGain);
+   fUI->setParamValue("/clarinet/otherParams/vibratoGain", vibratoGain);
 }
 
-void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
-   dspFaust.setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
-}
+//void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
+//   fUI->setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
+//}
 void clarinetPluginAudioProcessor::setReedStiffness(float reedStiffness) {
-   dspFaust.setParamValue("/clarinet/clarinetModel/reedStiffness", reedStiffness);
+   fUI->setParamValue("/clarinet/otherParams/reedStiffness", reedStiffness);
 }
 void clarinetPluginAudioProcessor::setBellOpening(float bellOpening) {
-   dspFaust.setParamValue("/clarinet/clarinetModel/bellOpening", bellOpening);
+   fUI->setParamValue("/clarinet/otherParams/bellOpening", bellOpening);
 }
 void clarinetPluginAudioProcessor::setOutGain(float outGain) {
-   dspFaust.setParamValue("/clarinet/clarinetModel/outGain", outGain);
+   fUI->setParamValue("/clarinet/otherParams/outGain", outGain);
 }
 
+//void clarinetPluginAudioProcessor::setGate(bool gate)
+//{
+//    if(gate) {
+//        fUI->setParamValue("/clarinet/gate",1);
+//    } else {
+//        fUI->setParamValue("/clarinet/gate",0);
+//    }
+//}
+
 //========================faust get parameter functions=============================
-float clarinetPluginAudioProcessor::getPressure() {
-   return dspFaust.getParamValue("/clarinet/blower/pressure");
-}
-float clarinetPluginAudioProcessor::getBreathGain() {
-   return dspFaust.getParamValue("/clarinet/blower/breathGain");
-}
-float clarinetPluginAudioProcessor::getBreathCutoff() {
-   return dspFaust.getParamValue("/clarinet/blower/breathCutoff");
-}
+//float clarinetPluginAudioProcessor::getPressure() {
+//   return fUI->getParamValue("/clarinet/blower/pressure");
+//}
+//float clarinetPluginAudioProcessor::getBreathGain() {
+//   return fUI->getParamValue("/clarinet/blower/breathGain");
+//}
+//float clarinetPluginAudioProcessor::getBreathCutoff() {
+//   return fUI->getParamValue("/clarinet/blower/breathCutoff");
+//}
 float clarinetPluginAudioProcessor::getVibratoFreq() {
-   return dspFaust.getParamValue("/clarinet/blower/vibratoFreq");
+   return fUI->getParamValue("/clarinet/blower/vibratoFreq");
 }
 float clarinetPluginAudioProcessor::getVibratoGain() {
-   return dspFaust.getParamValue("/clarinet/blower/vibratoGain");
+   return fUI->getParamValue("/clarinet/blower/vibratoGain");
 }
-float clarinetPluginAudioProcessor::getTubeLength() {
-   return dspFaust.getParamValue("/clarinet/clarinetModel/tubeLength");
-}
+//float clarinetPluginAudioProcessor::getTubeLength() {
+//   return fUI->getParamValue("/clarinet/clarinetModel/tubeLength");
+//}
 float clarinetPluginAudioProcessor::getReedStiffness() {
-   return dspFaust.getParamValue("/clarinet/clarinetModel/reedStiffness");
+   return fUI->getParamValue("/clarinet/otherParams/reedStiffness");
 }
 float clarinetPluginAudioProcessor::getBellOpening() {
-   return dspFaust.getParamValue("/clarinet/clarinetModel/bellOpening");
+   return fUI->getParamValue("/clarinet/otherParams/bellOpening");
 }
 float clarinetPluginAudioProcessor::getOutGain() {
-   return dspFaust.getParamValue("/clarinet/clarinetModel/outGain");
+   return fUI->getParamValue("/clarinet/otherParams/outGain");
 }
+
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()

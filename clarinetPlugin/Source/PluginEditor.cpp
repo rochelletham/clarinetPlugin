@@ -13,6 +13,7 @@
 clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), audioVisualizer(2)
 {
+   // TODO: (1) keep audio code in plugin processor
    // This is where our plugin’s editor size is set.
    setSize (780, 500);
    otherLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colours::red);
@@ -21,10 +22,12 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
    pressureSlider.setLookAndFeel((&otherLookAndFeel));
    pressureSlider.setSliderStyle(Slider::LinearVertical);
    pressureSlider.setRange(0.0, 1.0);
+   // TODO: read (1)
    pressureSlider.setValue(kPressureDEF);
    pressureSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the pressure value whenever the slider changes
    pressureSlider.onValueChange = [this] {
+      // TODO: don't need to check gain
       if (outGainSlider.getValue() > 0) {
          std::cout << "pressureSlider: " << pressureSlider.getValue() <<std::endl;
          audioProcessor.setPressure(pressureSlider.getValue());
@@ -225,6 +228,7 @@ void clarinetPluginAudioProcessorEditor::resized()
 
    auto rightGroup = area.removeFromRight(400);
    rightGroup = rightGroup.removeFromTop(200);
+   // TODO: centre 
    clarinetLenSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
    bellOpeningSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
    reedStiffnessSlider.setBounds(rightGroup.removeFromRight(sliderWidth));

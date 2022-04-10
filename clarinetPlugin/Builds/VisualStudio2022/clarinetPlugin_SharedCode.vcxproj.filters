@@ -448,12 +448,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\MainApplication.cpp">
-      <Filter>clarinetPlugin\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\MainWindow.cpp">
-      <Filter>clarinetPlugin\Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
       <Filter>clarinetPlugin\Source</Filter>
     </ClCompile>
@@ -462,6 +456,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\dsp-faust\DspFaust.cpp">
       <Filter>clarinetPlugin\Source\dsp-faust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\clarinetMIDI.cpp">
+      <Filter>clarinetPlugin</Filter>
     </ClCompile>
     <ClCompile Include="C:\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
@@ -2568,12 +2565,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\MainApplication.h">
-      <Filter>clarinetPlugin\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\MainWindow.h">
-      <Filter>clarinetPlugin\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\PluginProcessor.h">
       <Filter>clarinetPlugin\Source</Filter>
     </ClInclude>
