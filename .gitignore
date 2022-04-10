@@ -100,4 +100,4 @@ extras/Projucer/JUCECompileEngine.dylib
 *.out
 *.app
 
-capstone_v2/ClarinetPhysicalModelMidi/JuceLibraryCode
+capstone_v2/ClarinetModel/JuceLibraryCode
