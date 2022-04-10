@@ -80,23 +80,29 @@ public:
   * **7**: `/clarinet/clarinetModel/bellOpening`
   * **8**: `/clarinet/clarinetModel/outGain`
    **/
-//   void setPressure(float pressure);
-//   void setBreathGain(float breathGain);
-//   void setBreathCutoff(float breathCutoff);
+   void setPressure(float pressure);
+   void setBreathGain(float breathGain);
+   void setBreathCutoff(float breathCutoff);
+   void setFreq(float freq);
+   void setBend(float bend);
+   void setGain(float gain);
+   void setEnvAttack(float envAttack);
+   void setSustain(float sustain);
+
    void setVibratoFreq(float vibratoFreq); // TODO: will need to rename this..
    void setVibratoGain(float vibratoGain);
    void setTubeLength(float tubeLength);
    void setReedStiffness(float reedStiffness);
    void setBellOpening(float bellOpening);
    void setOutGain(float outGain);
-//   void setGate(bool gate);
+   void setGate(bool gate);
 
-//  float getPressure();
-//  float getBreathGain();
-//  float getBreathCutoff();
+  float getPressure();
+  float getBreathGain();
+  float getBreathCutoff();
   float getVibratoFreq();
   float getVibratoGain();
-//  float getTubeLength();
+  float getTubeLength();
   float getReedStiffness();
   float getBellOpening();
   float getOutGain();
@@ -104,8 +110,8 @@ public:
 private:
    // wrapped as unique ptrs so when it is time to delete them, we don't
    // need to do anything additionally. (new/delete called under the hood)
-//   unique_ptr<MapUI> fUI;
-//   unique_ptr<dsp> fDSP;
+   //   unique_ptr<MapUI> fUI;
+   //   unique_ptr<dsp> fDSP;
    MapUI* fUI;
    dsp* fDSP;
    // stores our stereo output

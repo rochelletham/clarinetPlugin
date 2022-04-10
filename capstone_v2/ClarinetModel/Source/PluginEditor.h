@@ -38,6 +38,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
    clarinetPluginAudioProcessor& audioProcessor;
+
    juce::LookAndFeel_V4 otherLookAndFeel;
 
    juce::Slider midiVolumeSlider;

@@ -94,6 +94,8 @@ void clarinetPluginAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+//   fDSP = make_unique<dsp>();
+//   fUI = make_unique<MapUI>();
 //   fDSP = new mydsp();
 //   fDSP->init(sampleRate);
 //   fUI = new MapUI();
@@ -102,14 +104,15 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 //   for (int channel = 0; channel < 2; ++channel) {
 //      outputs[channel] = new float[samplesPerBlock];
 //   }
-   //   fDSP = make_unique<dsp>();
-   //   fUI = make_unique<MapUI>();
+//
 
    fDSP = new mydsp();
    fDSP->init(sampleRate);
    fUI = new MapUI();
    // TODO: no viable conversion from unique_ptr<MapUI> to UI *
    fDSP->buildUserInterface(fUI);
+   // double array: one dimension for for audio channels and
+   // second dimension for audio samples/buffers
    outputs = new float*[2];
    for (int channel = 0; channel < 2; ++channel) {
       outputs[channel] = new float[samplesPerBlock];
@@ -218,44 +221,68 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
 }
 
 //========================faust set parameter functions=============================
-//void clarinetPluginAudioProcessor::setPressure(float pressure) {
-//   fUI->setParamValue("/clarinet/blower/pressure", pressure);
-//}
-//void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
-//   fUI->setParamValue("/clarinet/blower/breathGain", breathGain);
-//}
-//void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
-//   fUI->setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
-//}
+void clarinetPluginAudioProcessor::setPressure(float pressure) {
+   fUI->setParamValue("/clarinet/blower/pressure", pressure);
+}
+void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
+   fUI->setParamValue("/clarinet/blower/breathGain", breathGain);
+}
+void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
+   fUI->setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
+}
+
+void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
+   fUI->setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
+}
+
+void clarinetPluginAudioProcessor::setFreq(float freq) {
+   fUI->setParamValue("/clarinet/midi/freq", freq);
+}
+
+void clarinetPluginAudioProcessor::setBend(float bend) {
+   fUI->setParamValue("/clarinet/midi/bend", bend);
+}
+
+void clarinetPluginAudioProcessor::setGain(float gain) {
+   fUI->setParamValue("/clarinet/midi/gain", gain);
+}
+
+void clarinetPluginAudioProcessor::setEnvAttack(float envAttack) {
+   fUI->setParamValue("/clarinet/midi/envAttack", envAttack);
+}
+
+void clarinetPluginAudioProcessor::setSustain(float sustain) {
+   fUI->setParamValue("/clarinet/midi/sustain", sustain);
+}
+
+void clarinetPluginAudioProcessor::setReedStiffness(float reedStiffness) {
+   fUI->setParamValue("/clarinet/otherParams/reedStiffness", reedStiffness);
+}
+
+void clarinetPluginAudioProcessor::setBellOpening(float bellOpening) {
+   fUI->setParamValue("/clarinet/otherParams/bellOpening", bellOpening);
+}
 
 void clarinetPluginAudioProcessor::setVibratoFreq(float vibratoFreq) {
    fUI->setParamValue("/clarinet/otherParams/vibratoFreq", vibratoFreq);
 }
+
 void clarinetPluginAudioProcessor::setVibratoGain(float vibratoGain) {
    fUI->setParamValue("/clarinet/otherParams/vibratoGain", vibratoGain);
 }
 
-//void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
-//   fUI->setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
-//}
-void clarinetPluginAudioProcessor::setReedStiffness(float reedStiffness) {
-   fUI->setParamValue("/clarinet/otherParams/reedStiffness", reedStiffness);
-}
-void clarinetPluginAudioProcessor::setBellOpening(float bellOpening) {
-   fUI->setParamValue("/clarinet/otherParams/bellOpening", bellOpening);
-}
 void clarinetPluginAudioProcessor::setOutGain(float outGain) {
    fUI->setParamValue("/clarinet/otherParams/outGain", outGain);
 }
 
-//void clarinetPluginAudioProcessor::setGate(bool gate)
-//{
-//    if(gate) {
-//        fUI->setParamValue("/clarinet/gate",1);
-//    } else {
-//        fUI->setParamValue("/clarinet/gate",0);
-//    }
-//}
+void clarinetPluginAudioProcessor::setGate(bool gate)
+{
+    if(gate) {
+        fUI->setParamValue("/clarinet/gate", true);
+    } else {
+        fUI->setParamValue("/clarinet/gate", false);
+    }
+}
 
 //========================faust get parameter functions=============================
 //float clarinetPluginAudioProcessor::getPressure() {

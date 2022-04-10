@@ -38,10 +38,10 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "ClarinetPhysicalModelMidi"
+ #define JucePlugin_Name                   "ClarinetModel"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "ClarinetPhysicalModelMidi"
+ #define JucePlugin_Desc                   "ClarinetModel"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "yourcompany"
@@ -98,16 +98,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         ClarinetPhysicalModelMidiAU
+ #define JucePlugin_AUExportPrefix         ClarinetModelAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "ClarinetPhysicalModelMidiAU"
+ #define JucePlugin_AUExportPrefixQuoted   "ClarinetModelAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.ClarinetPhysicalModelMidi
+ #define JucePlugin_CFBundleIdentifier     com.yourcompany.ClarinetModel
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           2048
@@ -125,7 +125,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.ClarinetPhysicalModelMidi
+ #define JucePlugin_AAXIdentifier          com.yourcompany.ClarinetModel
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -149,7 +149,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: ClarinetPhysicalModelMidi"
+ #define JucePlugin_IAAName                "yourcompany: ClarinetModel"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16

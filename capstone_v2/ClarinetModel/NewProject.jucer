@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="EVeUs0" name="ClarinetPhysicalModelMidi" projectType="audioplug"
-              useAppConfig="0" addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1"
-              pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
+<JUCERPROJECT id="EVeUs0" name="ClarinetModel" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
               pluginFormats="buildAU,buildStandalone,buildVST3">
-  <MAINGROUP id="EemV8g" name="ClarinetPhysicalModelMidi">
+  <MAINGROUP id="EemV8g" name="ClarinetModel">
     <GROUP id="{CFB1AFE7-92B6-3B05-1FF7-E52A0002090E}" name="Source">
       <FILE id="pB82jl" name="ClarinetPhysModMidi.h" compile="0" resource="0"
             file="Source/ClarinetPhysModMidi.h"/>
