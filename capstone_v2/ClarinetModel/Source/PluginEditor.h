@@ -14,16 +14,18 @@
 //==============================================================================
 /**
 */
-class clarinetPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
-{
+class clarinetPluginAudioProcessorEditor  : public juce::AudioProcessorEditor {
+
 public:
    clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor&);
     ~clarinetPluginAudioProcessorEditor() override;
 
     //==============================================================================
-    void paint (juce::Graphics&) override;
-    void resized() override;
+   void paint (juce::Graphics&) override;
+   void resized() override;
+//   void buttonClicked(juce::Button* button) override;
 
+   float kFreqDEF = 82.0;
    float kPressureDEF = 0.0;
    float kBreathGainDEF = 0.1;
    float kBreathCutoffDEF = 2000;
@@ -41,6 +43,7 @@ private:
 
    juce::LookAndFeel_V4 otherLookAndFeel;
 
+   juce::Slider freqSlider;
    juce::Slider midiVolumeSlider;
    juce::Slider pressureSlider;
    juce::Slider breathCutoffSlider;
@@ -52,8 +55,12 @@ private:
    juce::Slider bellOpeningSlider;
    juce::Slider outGainSlider;
 
+//   juce::TextButton gateButton;
+   juce::ToggleButton gateButton;
+
    // TODO: change this to button later
-   juce::Label audioSettingsButton;
+//   juce::Label audioSettingsButton;
+   juce::Label freqLabel;
    juce::Label volumeLabel;
    juce::Label pressureLabel;
    juce::Label breathCutoffLabel;
