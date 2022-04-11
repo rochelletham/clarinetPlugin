@@ -225,7 +225,7 @@ void clarinetPluginAudioProcessor::setPressure(float pressure) {
    fUI->setParamValue("/clarinet/blower/pressure", pressure);
 }
 void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
-   fUI->setParamValue("/clarinet/blower/breathGain", breathGain);
+   fUI->setParamValue("/clarinet/otherParams/breathGain", breathGain);
 }
 void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
    fUI->setParamValue("/clarinet/blower/breathCutoff", breathCutoff);

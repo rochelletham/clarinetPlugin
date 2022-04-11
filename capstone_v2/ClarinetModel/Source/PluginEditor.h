@@ -25,7 +25,9 @@ public:
    void resized() override;
 //   void buttonClicked(juce::Button* button) override;
 
-   float kFreqDEF = 82.0;
+   float kFreqDEF = 146.832;
+   float kEnvDEF = 1.0;
+   float kBendDEF = 0;
    float kPressureDEF = 0.0;
    float kBreathGainDEF = 0.1;
    float kBreathCutoffDEF = 2000;
@@ -44,7 +46,8 @@ private:
    juce::LookAndFeel_V4 otherLookAndFeel;
 
    juce::Slider freqSlider;
-   juce::Slider midiVolumeSlider;
+   juce::Slider envAttackSlider;
+   juce::Slider bendSlider;
    juce::Slider pressureSlider;
    juce::Slider breathCutoffSlider;
    juce::Slider breathGainSlider;
@@ -61,6 +64,8 @@ private:
    // TODO: change this to button later
 //   juce::Label audioSettingsButton;
    juce::Label freqLabel;
+   juce::Label envAttackLabel;
+   juce::Label bendLabel;
    juce::Label volumeLabel;
    juce::Label pressureLabel;
    juce::Label breathCutoffLabel;
