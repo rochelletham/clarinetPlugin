@@ -110,8 +110,8 @@ public:
 private:
    // wrapped as unique ptrs so when it is time to delete them, we don't
    // need to do anything additionally. (new/delete called under the hood)
-   //   unique_ptr<MapUI> fUI;
-   //   unique_ptr<dsp> fDSP;
+//      unique_ptr<MapUI> fUI;
+//   std::shared_ptr<dsp> fDSP;
    MapUI* fUI;
    dsp* fDSP;
    // stores our stereo output

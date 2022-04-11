@@ -94,21 +94,12 @@ void clarinetPluginAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-//   fDSP = make_unique<dsp>();
-//   fUI = make_unique<MapUI>();
-//   fDSP = new mydsp();
-//   fDSP->init(sampleRate);
-//   fUI = new MapUI();
-//   fDSP->buildUserInterface(fUI);
-//   outputs = new float*[2];
-//   for (int channel = 0; channel < 2; ++channel) {
-//      outputs[channel] = new float[samplesPerBlock];
-//   }
-//
-
+//   fDSP = std::make_shared<dsp>();
+//   fUI  = std::make_unique<MapUI>();
    fDSP = new mydsp();
-   fDSP->init(sampleRate);
    fUI = new MapUI();
+   fDSP->init(sampleRate);
+
    // TODO: no viable conversion from unique_ptr<MapUI> to UI *
    fDSP->buildUserInterface(fUI);
    // double array: one dimension for for audio channels and
@@ -122,12 +113,22 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
 void clarinetPluginAudioProcessor::releaseResources()
 {
-   delete fDSP;
-   delete fUI;
-   for (int channel = 0; channel < 2; ++channel) {
-      delete[] outputs[channel];
-   }
-   delete [] outputs;
+
+//   if (fDSP != NULL) {
+//      std::cout << "deleting fDSP" << std::endl;
+//      delete fDSP;
+//   }
+//   if (fUI != NULL) {
+//      std::cout << "deleting fUI" << std::endl;
+//      delete fUI;
+//   }
+//   for (int channel = 0; channel < 2; ++channel) {
+//      if (outputs[channel] != NULL) {
+//         std::cout << "deleting outputs[channel]" << std::endl;
+//         delete[] outputs[channel];
+//      }
+//   }
+//   delete [] outputs;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -251,6 +252,7 @@ void clarinetPluginAudioProcessor::setEnvAttack(float envAttack) {
    fUI->setParamValue("/clarinet/midi/envAttack", envAttack);
 }
 
+// decided not to implement the sustain parameter
 void clarinetPluginAudioProcessor::setSustain(float sustain) {
    fUI->setParamValue("/clarinet/midi/sustain", sustain);
 }
