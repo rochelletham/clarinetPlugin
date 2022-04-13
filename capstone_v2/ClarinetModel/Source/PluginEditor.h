@@ -39,6 +39,14 @@ public:
    float kOutGainDEF = 0.0;
    
 private:
+   /**
+    initializes the gui sliders
+    */
+   void setSliders();
+   /**
+    initializes the gui labels
+    */
+   void setLabels();
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
    clarinetPluginAudioProcessor& audioProcessor;
@@ -59,7 +67,7 @@ private:
    juce::Slider outGainSlider;
 
 //   juce::TextButton gateButton;
-   juce::ToggleButton gateButton;
+//   juce::ToggleButton gateButton;
 
    // TODO: change this to button later
 //   juce::Label audioSettingsButton;
@@ -76,6 +84,7 @@ private:
    juce::Label reedStiffnessLabel;
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
+   juce::Label gateLabel;
 
    /// A specialized JUCE component that displays a wave form.
    juce::AudioVisualiserComponent audioVisualizer;

@@ -116,6 +116,8 @@ private:
    dsp* fDSP;
    // stores our stereo output
    float** outputs;
+   /// A specialized JUCE component that displays a wave form.
+   juce::AudioVisualiserComponent audioVisualizer;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessor)
 

@@ -19,7 +19,7 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), audioVisualizer(2)
 #endif
 {
    
@@ -94,14 +94,17 @@ void clarinetPluginAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-//   fDSP = std::make_shared<dsp>();
+//   fDSP = std::make_unique<dsp>();
 //   fUI  = std::make_unique<MapUI>();
    fDSP = new mydsp();
    fUI = new MapUI();
    fDSP->init(sampleRate);
-
-   // TODO: no viable conversion from unique_ptr<MapUI> to UI *
    fDSP->buildUserInterface(fUI);
+
+   audioVisualizer.setBufferSize(samplesPerBlock);
+   //display 8 blocks concurrently
+   audioVisualizer.setSamplesPerBlock(8);
+
    // double array: one dimension for for audio channels and
    // second dimension for audio samples/buffers
    outputs = new float*[2];
@@ -225,16 +228,17 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
 void clarinetPluginAudioProcessor::setPressure(float pressure) {
    fUI->setParamValue("/clarinet/blower/pressure", pressure);
 }
-void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
-   fUI->setParamValue("/clarinet/otherParams/breathGain", breathGain);
-}
-void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
-   fUI->setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
-}
 
-void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
-   fUI->setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
-}
+//void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
+//   fUI->setParamValue("/clarinet/otherParams/breathGain", breathGain);
+//}
+//void clarinetPluginAudioProcessor::setBreathCutoff(float breathCutoff) {
+//   fUI->setParamValue("/clarinet/blower/breathCutoff", breathCutoff);
+//}
+
+//void clarinetPluginAudioProcessor::setTubeLength(float tubeLength) {
+//   fUI->setParamValue("/clarinet/clarinetModel/tubeLength", tubeLength);
+//}
 
 void clarinetPluginAudioProcessor::setFreq(float freq) {
    fUI->setParamValue("/clarinet/midi/freq", freq);
