@@ -26,12 +26,13 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
 void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&freqSlider);
    freqSlider.setLookAndFeel((&otherLookAndFeel));
-   freqSlider.setSliderStyle(juce::Slider::LinearVertical);
-   freqSlider.setValue(kFreqDEF);
-
    // range: E3 to C7
    // TODO: only allow semitones
    freqSlider.setRange(146.832, 2093.005);
+   freqSlider.setValue(audioProcessor.getFreq());
+   freqSlider.setSliderStyle(juce::Slider::LinearVertical);
+
+
    // update the pressure value whenever the slider changes
    freqSlider.onValueChange = [this] {
       std::cout << "freqSlider: " << freqSlider.getValue() <<std::endl;
@@ -44,7 +45,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&envAttackSlider);
    envAttackSlider.setSliderStyle(juce::Slider::LinearVertical);
    envAttackSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
-   envAttackSlider.setValue(kFreqDEF);
+   envAttackSlider.setValue(audioProcessor.getEnvAttack());
    envAttackSlider.setRange(1.0, 30.0);
    envAttackSlider.onValueChange = [this] {
       std::cout << "envAttackSlider: " << envAttackSlider.getValue() <<std::endl;
@@ -55,7 +56,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&bendSlider);
    bendSlider.setSliderStyle(juce::Slider::LinearVertical);
    bendSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
-   bendSlider.setValue(kBendDEF);
+   bendSlider.setValue(audioProcessor.getBend());
    bendSlider.setRange(-2, 2);
    bendSlider.onValueChange = [this] {
       std::cout << "bendSlider: " << bendSlider.getValue() <<std::endl;
@@ -66,8 +67,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
    addAndMakeVisible(&vibratoFreqSlider);
    vibratoFreqSlider.setSliderStyle(juce::Slider::LinearVertical);
+   vibratoFreqSlider.setValue(audioProcessor.getVibratoFreq());
    vibratoFreqSlider.setRange(0.0, 10.0);
-   vibratoFreqSlider.setValue(kVibratoFreqDEF);
    vibratoFreqSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    vibratoFreqSlider.onValueChange = [this] {
@@ -78,8 +79,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
    addAndMakeVisible(&vibratoGainSlider);
    vibratoGainSlider.setSliderStyle(juce::Slider::LinearVertical);
+   vibratoGainSlider.setValue(audioProcessor.getVibratoGain());
    vibratoGainSlider.setRange(0.0, 1.0);
-   vibratoGainSlider.setValue(kVibratoGainDEF);
    vibratoGainSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    vibratoGainSlider.onValueChange = [this] {
@@ -90,8 +91,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
    addAndMakeVisible(&reedStiffnessSlider);
    reedStiffnessSlider.setSliderStyle(juce::Slider::LinearVertical);
+   reedStiffnessSlider.setValue(audioProcessor.getReedStiffness());
    reedStiffnessSlider.setRange(0.0, 1.0);
-   reedStiffnessSlider.setValue(kReedStiffDEF);
    reedStiffnessSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    reedStiffnessSlider.onValueChange = [this] {
@@ -102,8 +103,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
    addAndMakeVisible(&bellOpeningSlider);
    bellOpeningSlider.setSliderStyle(juce::Slider::LinearVertical);
+   bellOpeningSlider.setValue(audioProcessor.getBellOpening());
    bellOpeningSlider.setRange(0.0, 1.0);
-   bellOpeningSlider.setValue(kBellOpeningDEF);
    bellOpeningSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    bellOpeningSlider.onValueChange = [this] {
@@ -115,7 +116,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&outGainSlider);
    outGainSlider.setSliderStyle(juce::Slider::LinearVertical);
    outGainSlider.setRange(0.0, 1.0);
-   outGainSlider.setValue(kOutGainDEF);
+   outGainSlider.setValue(audioProcessor.getOutGain());
    outGainSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    outGainSlider.onValueChange = [this] {
@@ -171,10 +172,6 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
    outGainLabel.attachToComponent (&outGainSlider, false);
    outGainLabel.setJustificationType(juce::Justification::bottom);
 
-//   addAndMakeVisible(&gateLabel);
-//   outGainLabel.setText ("Gate", juce::dontSendNotification);
-//   outGainLabel.attachToComponent (&gateButton, false);
-//   outGainLabel.setJustificationType(juce::Justification::right);
 }
 
 
@@ -218,12 +215,10 @@ void clarinetPluginAudioProcessorEditor::resized()
    vibratoFreqSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
    vibratoGainSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
    envAttackSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
-//   breathCutoffSlider.setBounds (leftGroup.removeFromLeft (sliderWidth));
-//   breathGainSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
 
    auto rightGroup = area.removeFromRight(400);
    rightGroup = rightGroup.removeFromTop(200);
-   // TODO: centre
+
    clarinetLenSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
    bellOpeningSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
    reedStiffnessSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
