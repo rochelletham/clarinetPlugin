@@ -21,10 +21,6 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
 
    addAndMakeVisible(audioVisualizer);
 
-//   gateButton.onClick = [this] {
-//     audioProcessor.setGate(gateButton.getToggleState());
-//   };
-//   addAndMakeVisible(gateButton);
 }
 
 void clarinetPluginAudioProcessorEditor::setSliders() {
@@ -125,6 +121,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    outGainSlider.onValueChange = [this] {
       std::cout << "gain: " << outGainSlider.getValue() <<std::endl;
       auto gain = outGainSlider.getValue();
+      // gate only toggled on when the gain is > 0
       if (gain > 0) {
          audioProcessor.setGate(true);
          audioProcessor.setOutGain(gain);
@@ -194,13 +191,6 @@ void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 }
 
-//void clarinetPluginAudioProcessorEditor::buttonClicked(juce::Button* button) {
-//   if (button == &gateButton) {
-//      audioProcessor.setGate(true);
-//   }
-//   gateButton.addListener(this);
-//}
-
 void clarinetPluginAudioProcessorEditor::resized()
 {
    // the area of the entire rectangle of the plugin window
@@ -213,7 +203,6 @@ void clarinetPluginAudioProcessorEditor::resized()
    auto visualSpace = area.removeFromBottom(150).removeFromLeft(600);
    visualSpace.reduce(20,5);
    audioVisualizer.setBounds(visualSpace.removeFromLeft(300));
-//   gateButton.setBounds(visualSpace.removeFromLeft(50));
 
    lineOne.removeFromTop(8);
    lineTwo.removeFromTop(8);

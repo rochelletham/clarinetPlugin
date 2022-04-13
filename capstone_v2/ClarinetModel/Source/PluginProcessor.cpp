@@ -94,12 +94,11 @@ void clarinetPluginAudioProcessor::changeProgramName (int index, const juce::Str
 //==============================================================================
 void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-//   fDSP = std::make_unique<dsp>();
-//   fUI  = std::make_unique<MapUI>();
-   fDSP = new mydsp();
-   fUI = new MapUI();
+   fDSP = std::make_unique<mydsp>();
+   fUI  = std::make_unique<MapUI>();
+
    fDSP->init(sampleRate);
-   fDSP->buildUserInterface(fUI);
+   fDSP->buildUserInterface(fUI.get());
 
    audioVisualizer.setBufferSize(samplesPerBlock);
    //display 8 blocks concurrently
