@@ -70,16 +70,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
    //===========faust parameter functions==============================
-  /* **0**: `/clarinet/blower/pressure`
-  * **1**: `/clarinet/blower/breathGain`
-  * **2**: `/clarinet/blower/breathCutoff`
-  * **3**: `/clarinet/blower/vibratoFreq`
-  * **4**: `/clarinet/blower/vibratoGain`
-  * **5**: `/clarinet/clarinetModel/tubeLength`
-  * **6**: `/clarinet/clarinetModel/reedStiffness`
-  * **7**: `/clarinet/clarinetModel/bellOpening`
-  * **8**: `/clarinet/clarinetModel/outGain`
-   **/
+
    void setPressure(float pressure);
    void setBreathGain(float breathGain);
    void setBreathCutoff(float breathCutoff);
@@ -97,6 +88,9 @@ public:
    void setOutGain(float outGain);
    void setGate(bool gate);
 
+  float getFreq();
+  float getEnvAttack();
+  float getBend();
   float getPressure();
   float getBreathGain();
   float getBreathCutoff();
@@ -106,7 +100,19 @@ public:
   float getReedStiffness();
   float getBellOpening();
   float getOutGain();
-
+   //============================default values=============================//
+   float kFreqDEF = 146.832;
+   float kEnvDEF = 1.0;
+   float kBendDEF = 0;
+   float kPressureDEF = 0.0;
+   float kBreathGainDEF = 0.1;
+   float kBreathCutoffDEF = 2000;
+   float kVibratoFreqDEF = 5.0;
+   float kVibratoGainDEF = 0.25;
+   float kClarinetLenDEF = 0.8;
+   float kReedStiffDEF = 0.5;
+   float kBellOpeningDEF = 0.5;
+   float kOutGainDEF = 0.0;
 private:
    // wrapped as unique ptrs so when it is time to delete them, we don't
    // need to do anything additionally. (new/delete called under the hood)
