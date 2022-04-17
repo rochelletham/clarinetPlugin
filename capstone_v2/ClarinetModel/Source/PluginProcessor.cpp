@@ -22,7 +22,12 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
                        ), audioVisualizer(2)
 #endif
 {
-   
+   audioVisualizer.setRepaintRate(30);
+   // how many samples the component is going to draw
+   // if give 32, will seem lik the audiovisualizer is drawing really fast.
+   // 256 samples will be easier to see
+   audioVisualizer.setBufferSize(256);
+
 }
 
 clarinetPluginAudioProcessor::~clarinetPluginAudioProcessor()
@@ -96,13 +101,10 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 {
    fDSP = std::make_unique<mydsp>();
    fUI  = std::make_unique<MapUI>();
+   audioVisualizer.clear();
 
    fDSP->init(sampleRate);
    fDSP->buildUserInterface(fUI.get());
-
-   audioVisualizer.setBufferSize(samplesPerBlock);
-   //display 8 blocks concurrently
-   audioVisualizer.setSamplesPerBlock(8);
 
    // double array: one dimension for for audio channels and
    // second dimension for audio samples/buffers
@@ -110,11 +112,10 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
    for (int channel = 0; channel < 2; ++channel) {
       outputs[channel] = new float[samplesPerBlock];
    }
-
+   setGate(kGateDEF);
    setFreq(kFreqDEF);
    setBend(kBendDEF);
    setEnvAttack(kEnvDEF);
-   setPressure(kPressureDEF);
    setVibratoFreq(kVibratoFreqDEF);
    setVibratoGain(kVibratoGainDEF);
    setReedStiffness(kReedStiffDEF);
@@ -125,22 +126,7 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
 void clarinetPluginAudioProcessor::releaseResources()
 {
-
-//   if (fDSP != NULL) {
-//      std::cout << "deleting fDSP" << std::endl;
-//      delete fDSP;
-//   }
-//   if (fUI != NULL) {
-//      std::cout << "deleting fUI" << std::endl;
-//      delete fUI;
-//   }
-//   for (int channel = 0; channel < 2; ++channel) {
-//      if (outputs[channel] != NULL) {
-//         std::cout << "deleting outputs[channel]" << std::endl;
-//         delete[] outputs[channel];
-//      }
-//   }
-//   delete [] outputs;
+   audioVisualizer.clear();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -184,17 +170,6 @@ void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-        // ..do something to the data...
-    }
-
    // compute one audio block of size buffer.getNumSamples and store in outputs
    fDSP->compute(buffer.getNumSamples(), NULL, outputs);
 
@@ -204,6 +179,10 @@ void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
          *buffer.getWritePointer(channel,i) = outputs[channel][i];
       }
    }
+   // push buffer into component
+   audioVisualizer.pushBuffer(buffer);
+
+
 }
 
 //==============================================================================
@@ -232,9 +211,9 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
 }
 
 //========================faust set parameter functions=============================
-void clarinetPluginAudioProcessor::setPressure(float pressure) {
-   fUI->setParamValue("/clarinet/blower/pressure", pressure);
-}
+//void clarinetPluginAudioProcessor::setPressure(float pressure) {
+//   fUI->setParamValue("/clarinet/blower/pressure", pressure);
+//}
 
 //void clarinetPluginAudioProcessor::setBreathGain(float breathGain) {
 //   fUI->setParamValue("/clarinet/otherParams/breathGain", breathGain);
@@ -312,10 +291,10 @@ float clarinetPluginAudioProcessor::getBend() {
 }
 
 float clarinetPluginAudioProcessor::getVibratoFreq() {
-   return fUI->getParamValue("/clarinet/blower/vibratoFreq");
+   return fUI->getParamValue("/clarinet/otherParams/vibratoFreq");
 }
 float clarinetPluginAudioProcessor::getVibratoGain() {
-   return fUI->getParamValue("/clarinet/blower/vibratoGain");
+   return fUI->getParamValue("/clarinet/otherParams/vibratoGain");
 }
 
 float clarinetPluginAudioProcessor::getReedStiffness() {

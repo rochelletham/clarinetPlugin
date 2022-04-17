@@ -71,9 +71,6 @@ public:
 
    //===========faust parameter functions==============================
 
-   void setPressure(float pressure);
-   void setBreathGain(float breathGain);
-   void setBreathCutoff(float breathCutoff);
    void setFreq(float freq);
    void setBend(float bend);
    void setGain(float gain);
@@ -88,6 +85,7 @@ public:
    void setOutGain(float outGain);
    void setGate(bool gate);
 
+  float getGate();
   float getFreq();
   float getEnvAttack();
   float getBend();
@@ -101,7 +99,8 @@ public:
   float getBellOpening();
   float getOutGain();
    //============================default values=============================//
-   float kFreqDEF = 146.832;
+   float kGateDEF = false;
+   float kFreqDEF = 164.81;
    float kEnvDEF = 1.0;
    float kBendDEF = 0;
    float kPressureDEF = 0.0;
@@ -113,6 +112,9 @@ public:
    float kReedStiffDEF = 0.5;
    float kBellOpeningDEF = 0.5;
    float kOutGainDEF = 0.0;
+
+   // A specialized JUCE component that displays a wave form.
+   juce::AudioVisualiserComponent audioVisualizer;
 private:
    // wrapped as unique ptrs so when it is time to delete them, we don't
    // need to do anything additionally. (new/delete called under the hood)
@@ -121,8 +123,7 @@ private:
 
    // stores our stereo output
    float** outputs;
-   /// A specialized JUCE component that displays a wave form.
-   juce::AudioVisualiserComponent audioVisualizer;
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessor)
 

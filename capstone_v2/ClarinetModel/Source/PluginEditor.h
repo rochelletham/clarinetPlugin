@@ -37,7 +37,9 @@ public:
    float kReedStiffDEF = 0.5;
    float kBellOpeningDEF = 0.5;
    float kOutGainDEF = 0.0;
-   
+
+   float kTextWidth = 55;
+   float kTextHeight = 20;
 private:
    /**
     initializes the gui sliders
@@ -53,6 +55,7 @@ private:
 
    juce::LookAndFeel_V4 otherLookAndFeel;
 
+   juce::TextButton gateButton;
    juce::Slider freqSlider;
    juce::Slider envAttackSlider;
    juce::Slider bendSlider;
@@ -85,9 +88,6 @@ private:
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
    juce::Label gateLabel;
-
-   /// A specialized JUCE component that displays a wave form.
-   juce::AudioVisualiserComponent audioVisualizer;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessorEditor)

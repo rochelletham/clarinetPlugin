@@ -11,15 +11,19 @@
 
 //==============================================================================
 clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), audioVisualizer(2)
+    : AudioProcessorEditor (&p), audioProcessor (p)
 {
    // This is where our plugin’s editor size is set.
    setSize (780, 500);
-   otherLookAndFeel.setColour (juce::Slider::thumbColourId, juce::Colours::red);
+
+   getLookAndFeel().setColour (juce::Slider::thumbColourId, juce::Colours::orange);
+   getLookAndFeel().setColour(juce::Slider::trackColourId, juce::Colours::floralwhite);
    setSliders();
    setLabels();
 
-   addAndMakeVisible(audioVisualizer);
+   addAndMakeVisible(audioProcessor.audioVisualizer);
+   audioProcessor.audioVisualizer.setColours(juce::Colours::black,
+                                             juce::Colours::whitesmoke.withAlpha(0.5f));
 
 }
 
@@ -27,21 +31,37 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&freqSlider);
    freqSlider.setLookAndFeel((&otherLookAndFeel));
    // range: E3 to C7
-   // TODO: only allow semitones
    freqSlider.setRange(146.832, 2093.005);
    freqSlider.setValue(audioProcessor.getFreq());
    freqSlider.setSliderStyle(juce::Slider::LinearVertical);
 
-
-   // update the pressure value whenever the slider changes
+   // lambda function instead of overriding slider listener funct.
+   // update the freq value whenever the slider changes
    freqSlider.onValueChange = [this] {
       std::cout << "freqSlider: " << freqSlider.getValue() <<std::endl;
       audioProcessor.setFreq(freqSlider.getValue());
    };
    freqSlider.setDoubleClickReturnValue(true, kFreqDEF);
-   freqSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+   freqSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                              kTextWidth, kTextHeight);
+   freqSlider.setNumDecimalPlacesToDisplay(2);
 
+   // TODO: toggle
+   addAndMakeVisible(&gateButton);
 
+   auto gateState = gateButton.getState();
+   gateButton.onClick = [this] {
+      if (gateButton.isOver()) {
+         std::cout << "gate button is over";
+         audioProcessor.setGate(true);
+      } else {
+         audioProcessor.setGate(false);
+      }
+   };
+
+   gateButton.setButtonText("gate");
+   
+//   envAttackSlider.setValue(audioProcessor.getEnvAttack());
    addAndMakeVisible(&envAttackSlider);
    envAttackSlider.setSliderStyle(juce::Slider::LinearVertical);
    envAttackSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
@@ -52,6 +72,9 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       audioProcessor.setEnvAttack(envAttackSlider.getValue());
    };
    envAttackSlider.setDoubleClickReturnValue(true, kEnvDEF);
+   envAttackSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   envAttackSlider.setNumDecimalPlacesToDisplay(2);
 
    addAndMakeVisible(&bendSlider);
    bendSlider.setSliderStyle(juce::Slider::LinearVertical);
@@ -63,6 +86,9 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       audioProcessor.setBend(bendSlider.getValue());
    };
    bendSlider.setDoubleClickReturnValue(true, kBendDEF);
+   bendSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   bendSlider.setNumDecimalPlacesToDisplay(2);
 
 
    addAndMakeVisible(&vibratoFreqSlider);
@@ -76,6 +102,9 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       audioProcessor.setVibratoFreq(vibratoFreqSlider.getValue());
    };
    vibratoFreqSlider.setDoubleClickReturnValue(true, kVibratoFreqDEF);
+   vibratoFreqSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   vibratoFreqSlider.setNumDecimalPlacesToDisplay(2);
 
    addAndMakeVisible(&vibratoGainSlider);
    vibratoGainSlider.setSliderStyle(juce::Slider::LinearVertical);
@@ -88,6 +117,10 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       audioProcessor.setVibratoGain(vibratoGainSlider.getValue());
    };
    vibratoGainSlider.setDoubleClickReturnValue(true, kVibratoGainDEF);
+   vibratoGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   vibratoGainSlider.setNumDecimalPlacesToDisplay(2);
+
 
    addAndMakeVisible(&reedStiffnessSlider);
    reedStiffnessSlider.setSliderStyle(juce::Slider::LinearVertical);
@@ -100,6 +133,10 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       audioProcessor.setReedStiffness(reedStiffnessSlider.getValue());
    };
    reedStiffnessSlider.setDoubleClickReturnValue(true, kReedStiffDEF);
+   reedStiffnessSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   reedStiffnessSlider.setNumDecimalPlacesToDisplay(2);
+
 
    addAndMakeVisible(&bellOpeningSlider);
    bellOpeningSlider.setSliderStyle(juce::Slider::LinearVertical);
@@ -112,6 +149,9 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       audioProcessor.setBellOpening(bellOpeningSlider.getValue());
    };
    bellOpeningSlider.setDoubleClickReturnValue(true, kBellOpeningDEF);
+   bellOpeningSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   bellOpeningSlider.setNumDecimalPlacesToDisplay(2);
 
    addAndMakeVisible(&outGainSlider);
    outGainSlider.setSliderStyle(juce::Slider::LinearVertical);
@@ -123,16 +163,17 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
       std::cout << "gain: " << outGainSlider.getValue() <<std::endl;
       auto gain = outGainSlider.getValue();
       // gate only toggled on when the gain is > 0
-      if (gain > 0) {
-         audioProcessor.setGate(true);
+//      if (gain > 0) {
          audioProcessor.setOutGain(gain);
-      } else {
-         audioProcessor.setGate(false);
-      }
-
-
+//         audioProcessor.setGate(true);
+//      } else {
+//         audioProcessor.setGate(false);
+//      }
    };
    outGainSlider.setDoubleClickReturnValue(true, kOutGainDEF);
+   outGainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                                   kTextWidth, kTextHeight);
+   outGainSlider.setNumDecimalPlacesToDisplay(2);
 
 }
 
@@ -183,8 +224,8 @@ clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
 void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-    g.setFont (15.0f);
+   g.fillAll(juce::Colours::wheat);
+   g.setFont (15.0f);
 
 }
 
@@ -199,12 +240,15 @@ void clarinetPluginAudioProcessorEditor::resized()
 
    auto visualSpace = area.removeFromBottom(150).removeFromLeft(600);
    visualSpace.reduce(20,5);
-   audioVisualizer.setBounds(visualSpace.removeFromLeft(300));
+   audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
+                                                               visualSpace.getWidth()*0.5,
+                                                               visualSpace.getHeight()));
+   gateButton.setBounds(visualSpace.removeFromLeft(40));
 
    lineOne.removeFromTop(8);
    lineTwo.removeFromTop(8);
 
-   auto sliderWidth = 50;
+   auto sliderWidth = 60;
    outGainLabel.setBounds(bottomLine.removeFromBottom(12));
    outGainSlider.setBounds(area.removeFromRight(sliderWidth));
 
