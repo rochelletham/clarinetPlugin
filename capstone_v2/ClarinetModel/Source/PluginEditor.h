@@ -89,6 +89,7 @@ private:
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
    juce::Label gateLabel;
+   juce::Label zoomLabel;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessorEditor)
