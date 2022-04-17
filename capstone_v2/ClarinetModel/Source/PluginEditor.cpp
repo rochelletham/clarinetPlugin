@@ -28,6 +28,17 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
 }
 
 void clarinetPluginAudioProcessorEditor::setSliders() {
+   addAndMakeVisible(&zoomSlider);
+   zoomSlider.setLookAndFeel((&otherLookAndFeel));
+   zoomSlider.setRange(100, 1024);
+   zoomSlider.setSliderStyle(juce::Slider::LinearVertical);
+   zoomSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false,
+                              kTextWidth, kTextHeight);
+   zoomSlider.onValueChange = [this] {
+      std::cout << "zoomSlider: " << zoomSlider.getValue() <<std::endl;
+      audioProcessor.audioVisualizer.setBufferSize(zoomSlider.getValue());
+   };
+
    addAndMakeVisible(&freqSlider);
    freqSlider.setLookAndFeel((&otherLookAndFeel));
    // range: E3 to C7
@@ -46,9 +57,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
                               kTextWidth, kTextHeight);
    freqSlider.setNumDecimalPlacesToDisplay(2);
 
-   // TODO: toggle
+   // TODO: fix gate toggle
    addAndMakeVisible(&gateButton);
-
    auto gateState = gateButton.getState();
    gateButton.onClick = [this] {
       if (gateButton.isOver()) {
@@ -237,18 +247,20 @@ void clarinetPluginAudioProcessorEditor::resized()
    auto bottomLine = area.removeFromBottom(24);
    auto lineOne = area.removeFromTop(24);
    auto lineTwo = area.removeFromTop(32);
-
    auto visualSpace = area.removeFromBottom(150).removeFromLeft(600);
+   auto sliderWidth = 60;
    visualSpace.reduce(20,5);
+   gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
+   zoomSlider.setBounds(visualSpace.removeFromLeft(sliderWidth));
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
-                                                               visualSpace.getWidth()*0.5,
+                                                               visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
-   gateButton.setBounds(visualSpace.removeFromLeft(40));
+
 
    lineOne.removeFromTop(8);
    lineTwo.removeFromTop(8);
 
-   auto sliderWidth = 60;
+
    outGainLabel.setBounds(bottomLine.removeFromBottom(12));
    outGainSlider.setBounds(area.removeFromRight(sliderWidth));
 

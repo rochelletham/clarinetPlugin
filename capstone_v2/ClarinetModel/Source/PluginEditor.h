@@ -68,6 +68,7 @@ private:
    juce::Slider reedStiffnessSlider;
    juce::Slider bellOpeningSlider;
    juce::Slider outGainSlider;
+   juce::Slider zoomSlider;
 
 //   juce::TextButton gateButton;
 //   juce::ToggleButton gateButton;

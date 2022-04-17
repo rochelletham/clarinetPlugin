@@ -24,9 +24,10 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
 {
    audioVisualizer.setRepaintRate(30);
    // how many samples the component is going to draw
-   // if give 32, will seem lik the audiovisualizer is drawing really fast.
-   // 256 samples will be easier to see
-   audioVisualizer.setBufferSize(256);
+   // if give 32, will seem like the audiovisualizer is drawing really fast because
+   // there aren't that many samples that need to be drawn/displayed
+   // 256 samples will be easier to see (more "zoomed out")
+   audioVisualizer.setBufferSize(kBufferSize);
 
 }
 
@@ -210,6 +211,9 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
     // whose contents will have been created by the getStateInformation() call.
 }
 
+//float clarinetPluginAudioProcessor::getBufferSize() {
+//   return bufferSize;
+//}
 //========================faust set parameter functions=============================
 //void clarinetPluginAudioProcessor::setPressure(float pressure) {
 //   fUI->setParamValue("/clarinet/blower/pressure", pressure);

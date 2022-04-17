@@ -69,6 +69,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+//   float getBufferSize();
    //===========faust parameter functions==============================
 
    void setFreq(float freq);
@@ -99,6 +100,7 @@ public:
   float getBellOpening();
   float getOutGain();
    //============================default values=============================//
+   float kBufferSize = 256;
    float kGateDEF = false;
    float kFreqDEF = 164.81;
    float kEnvDEF = 1.0;
@@ -123,6 +125,8 @@ private:
 
    // stores our stereo output
    float** outputs;
+
+//   float bufferSize;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessor)
