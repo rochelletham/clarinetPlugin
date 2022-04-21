@@ -14,11 +14,10 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
    // This is where our plugin’s editor size is set.
-   setSize (700, 400);
-
+   setSize (660, 460);
+   setResizable(true, true);
+   setResizeLimits(660, 460, 660*5, 460*5);
    setWantsKeyboardFocus(true);
-   getLookAndFeel().setColour (Slider::thumbColourId, Colours::orange);
-   getLookAndFeel().setColour(Slider::trackColourId, Colours::floralwhite);
    setSliders();
    setLabels();
 
@@ -27,10 +26,11 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
                                              Colours::whitesmoke.withAlpha(0.5f));
 
 }
-
+//TODO: 1) midi -- sliderval change without changing sound --> lambda changes freq
+//TODO: look at slider listener ^
+//TODO: or convert midi to freq (already have lambda callbacks)
 void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&zoomSlider);
-   zoomSlider.setLookAndFeel((&otherLookAndFeel));
    zoomSlider.setRange(50, 1024);
    zoomSlider.setSliderStyle(Slider::LinearVertical);
    zoomSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
@@ -44,7 +44,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
                         Colours::transparentWhite);
 
    addAndMakeVisible(&freqSlider);
-   freqSlider.setLookAndFeel((&otherLookAndFeel));
    // range: E3 to C7
    freqSlider.setRange(146.832, 2093.005);
    freqSlider.setValue(audioProcessor.getFreq());
@@ -140,7 +139,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    vibratoGainSlider.setColour(Slider::textBoxOutlineColourId,
                                Colours::transparentWhite);
 
-
    addAndMakeVisible(&reedStiffnessSlider);
    reedStiffnessSlider.setSliderStyle(Slider::LinearVertical);
    reedStiffnessSlider.setValue(audioProcessor.getReedStiffness());
@@ -199,50 +197,85 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
 void clarinetPluginAudioProcessorEditor::setLabels() {
    // TODO: add unit labels for the text
+   // TODO: set label to width of text, height 24
+   // TODO: set to widest text length (getstringwidth)
+   // TODO: :draw rectangles around the labels for dimensions
    addAndMakeVisible(&freqLabel);
    freqLabel.setText("Freq", dontSendNotification);
+   float freqStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Freq");
+   // width, height
+   freqLabel.setSize(freqStrWidth, 40);
+   freqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    freqLabel.attachToComponent (&freqSlider, false);
-   freqLabel.setJustificationType(Justification::centredTop);
+   freqLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&bendLabel);
    bendLabel.setText ("Bend", dontSendNotification);
+   float bendStrWidth = bendLabel.getFont().getStringWidthFloat("Bend");
+   bendLabel.setSize(bendStrWidth, 40);
+   bendLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    bendLabel.attachToComponent (&bendSlider, false);
-   bendLabel.setJustificationType(Justification::centredTop);
+   bendLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&vibratoFreqLabel);
-   vibratoFreqLabel.setText ("Vibrato", dontSendNotification);
+   vibratoFreqLabel.setText ("Rate", dontSendNotification);
+   float vibStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Rate");
+   vibratoFreqLabel.setSize(vibStrWidth, 40);
+   vibratoFreqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    vibratoFreqLabel.attachToComponent (&vibratoFreqSlider, false);
-   vibratoFreqLabel.setJustificationType(Justification::centredTop);
+   vibratoFreqLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&vibratoGainLabel);
-   vibratoGainLabel.setText ("Vibrato Gain", dontSendNotification);
+   vibratoGainLabel.setText ("Gain", dontSendNotification);
+   float vibGainStrWidth = vibratoGainLabel.getFont().getStringWidthFloat("Gain");
+   vibratoGainLabel.setSize(vibGainStrWidth, 40);
+   vibratoGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    vibratoGainLabel.attachToComponent (&vibratoGainSlider, false);
-   vibratoGainLabel.setJustificationType(Justification::centredTop);
+   vibratoGainLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&reedStiffnessLabel);
-   reedStiffnessLabel.setText ("Reed Stiffness", dontSendNotification);
+   reedStiffnessLabel.setText ("Reed\nStiffness", dontSendNotification);
+   float reedStrWidth = reedStiffnessLabel.getFont().getStringWidthFloat("Reed\nStiffness");
+   float reedStrHeight = reedStiffnessLabel.getFont().getHeight();
+   kTextHeight = reedStrHeight;
+   std::cout << kTextHeight << std::endl;
+   reedStiffnessLabel.setSize(reedStrWidth, reedStrHeight);
+   reedStiffnessLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    reedStiffnessLabel.attachToComponent (&reedStiffnessSlider, false);
-   reedStiffnessLabel.setJustificationType(Justification::centredTop);
+   reedStiffnessLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&bellOpeningLabel);
-   bellOpeningLabel.setText ("Bell Opening", dontSendNotification);
+   bellOpeningLabel.setText ("Bell\nOpening", dontSendNotification);
+   float bellStrWidth = bellOpeningLabel.getFont().getStringWidthFloat("Bell\nOpening");
+   bellOpeningLabel.setSize(bellStrWidth, 40);
+   bellOpeningLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    bellOpeningLabel.attachToComponent (&bellOpeningSlider, false);
-   bellOpeningLabel.setJustificationType(Justification::centredTop);
+   bellOpeningLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&envAttackLabel);
-   envAttackLabel.setText ("Envelope Attack", dontSendNotification);
+   envAttackLabel.setText ("Envelope\nAttack", dontSendNotification);
+   float envStrWidth = envAttackLabel.getFont().getStringWidthFloat("Envelope\nAttack");
+   envAttackLabel.setSize(envStrWidth, 40);
+   envAttackLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    envAttackLabel.attachToComponent (&envAttackSlider, false);
-   envAttackLabel.setJustificationType(Justification::centredTop);
+   envAttackLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&outGainLabel);
    outGainLabel.setText ("Gain", dontSendNotification);
+   float gainStrWidth = outGainLabel.getFont().getStringWidthFloat("Gain");
+   outGainLabel.setSize(gainStrWidth, 40);
+   outGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   outGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    outGainLabel.attachToComponent (&outGainSlider, false);
-   outGainLabel.setJustificationType(Justification::centredBottom);
+   outGainLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&zoomLabel);
    zoomLabel.setText ("Zoom", dontSendNotification);
+   float zoomStrWidth = zoomLabel.getFont().getStringWidthFloat("Zoom");
+   zoomLabel.setSize(zoomStrWidth, 40);
+   zoomLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    zoomLabel.attachToComponent (&zoomSlider, false);
-   zoomLabel.setJustificationType(Justification::centredBottom);
+   zoomLabel.setJustificationType(Justification::centred);
 
 }
 
@@ -252,29 +285,12 @@ clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
 }
 
 //==============================================================================
-//void clarinetPluginAudioProcessorEditor::openAudioSettings() {
-//   auto devComp = std::make_unique<AudioDeviceSelectorComponent>(deviceManager,0,2,0,2,true, false, true, false);
-//   DialogWindow::LaunchOptions dw;
-//   devComp->setSize(500, 270);
-//   dw.dialogTitle = "Audio Settings";
-//   dw.useNativeTitleBar = true;
-//   dw.resizable = false;
-//   dw.dialogBackgroundColour = this->getLookAndFeel().findColour(ResizableWindow::backgroundColourId);
-//   dw.DialogWindow::LaunchOptions::content.setOwned(devComp.release());
-//   dw.DialogWindow::LaunchOptions::launchAsync();
-//}
-
-//bool clarinetPluginAudioProcessorEditor::keyPressed(KeyPress &k) {
-//   if(k == KeyPress::spaceKey) {
-//      std::cout << "pressed space key" <<std::endl;
-//   }
-//}
-
 void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-   g.fillAll(Colours::wheat);
+   g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
    g.setFont (15.0f);
+
 }
 
 void clarinetPluginAudioProcessorEditor::resized()
@@ -282,38 +298,34 @@ void clarinetPluginAudioProcessorEditor::resized()
    // the area of the entire rectangle of the plugin window
    auto area = getLocalBounds();
    area.reduce(8,8);
-   auto bottomLine = area.removeFromBottom(24);
-   auto lineOne = area.removeFromTop(24);
-   auto lineTwo = area.removeFromTop(32);
-   auto visualSpace = area.removeFromBottom(150).removeFromLeft(600);
    auto sliderWidth = 60;
+   auto bottomLine = area.removeFromBottom(24);
+   area.removeFromTop(48);
+
+   outGainLabel.setBounds(bottomLine.removeFromBottom(12));
+   outGainSlider.setBounds(area.removeFromRight(sliderWidth));
+
+   //================== AUDIO VISUALIZER ==================//
+   auto visualSpace = area.removeFromBottom(150);
    visualSpace.reduce(20,5);
+   visualSpace.removeFromTop(32);
    gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
    zoomSlider.setBounds(visualSpace.removeFromLeft(sliderWidth));
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
 
+   auto sliderGroup = area.removeFromTop(400);
+   freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
+   bendSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
+   vibratoFreqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
+   vibratoGainSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
+   envAttackSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
 
-   lineOne.removeFromTop(8);
-   lineTwo.removeFromTop(8);
+   sliderGroup.removeFromRight(sliderWidth);
+   bellOpeningSlider.setBounds(sliderGroup.removeFromRight(sliderWidth));
+   reedStiffnessSlider.setBounds(sliderGroup.removeFromRight(sliderWidth));
+   sliderGroup.removeFromBottom(48);
 
 
-   outGainLabel.setBounds(bottomLine.removeFromBottom(12));
-   outGainSlider.setBounds(area.removeFromRight(sliderWidth));
-
-   auto leftGroup = area.removeFromLeft(400);
-   leftGroup = leftGroup.removeFromTop(200);
-   freqSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
-   bendSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
-   vibratoFreqSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
-   vibratoGainSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
-   envAttackSlider.setBounds(leftGroup.removeFromLeft (sliderWidth));
-
-   auto rightGroup = area.removeFromRight(400);
-   rightGroup = rightGroup.removeFromTop(200);
-
-   clarinetLenSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
-   bellOpeningSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
-   reedStiffnessSlider.setBounds(rightGroup.removeFromRight(sliderWidth));
 }

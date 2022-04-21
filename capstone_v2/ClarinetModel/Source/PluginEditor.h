@@ -10,7 +10,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-
+#include <vector>
+#include <string>
 using namespace juce;
 //==============================================================================
 /**
@@ -45,6 +46,7 @@ public:
    float kTextWidth = 55;
    float kTextHeight = 20;
 
+//      float freqStrWidth;
 private:
    /**
     initializes the gui sliders
@@ -58,45 +60,38 @@ private:
     // access the processor object that created it.
    clarinetPluginAudioProcessor& audioProcessor;
 
-
-   juce::LookAndFeel_V4 otherLookAndFeel;
-   TextButton settingsButton {"Audio Settings"};
-
    juce::TextButton gateButton;
    juce::Slider freqSlider;
    juce::Slider envAttackSlider;
    juce::Slider bendSlider;
-   juce::Slider pressureSlider;
-   juce::Slider breathCutoffSlider;
-   juce::Slider breathGainSlider;
    juce::Slider vibratoFreqSlider;
    juce::Slider vibratoGainSlider;
-   juce::Slider clarinetLenSlider;
+
    juce::Slider reedStiffnessSlider;
    juce::Slider bellOpeningSlider;
    juce::Slider outGainSlider;
    juce::Slider zoomSlider;
 
-//   juce::TextButton gateButton;
-//   juce::ToggleButton gateButton;
+      // These parameters are not available in the clarinet midi version. 
+      //   juce::Slider pressureSlider;
+      //   juce::Slider breathCutoffSlider;
+      //   juce::Slider breathGainSlider;
+      //   juce::Slider clarinetLenSlider;
 
-   // TODO: change this to button later
-//   juce::Label audioSettingsButton;
    juce::Label freqLabel;
    juce::Label envAttackLabel;
    juce::Label bendLabel;
-   juce::Label volumeLabel;
-   juce::Label pressureLabel;
-   juce::Label breathCutoffLabel;
-   juce::Label breathGainLabel;
    juce::Label vibratoFreqLabel;
    juce::Label vibratoGainLabel;
-   juce::Label clarinetLenLabel;
    juce::Label reedStiffnessLabel;
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
    juce::Label gateLabel;
    juce::Label zoomLabel;
+
+   std::vector<string> labelText = {"Freq", "Bend", "Rate", "Gain",
+                                    "Envelope\nAttack", "Reed\nStiffness",
+                                    "Bell\nOpening", "Out Gain", "Zoom"};
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (clarinetPluginAudioProcessorEditor)

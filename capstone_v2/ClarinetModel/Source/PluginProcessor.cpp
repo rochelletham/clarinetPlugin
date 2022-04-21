@@ -231,6 +231,7 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
 //}
 
 void clarinetPluginAudioProcessor::setFreq(float freq) {
+   // TODO: convert midikey to freq
    fUI->setParamValue("/clarinet/midi/freq", freq);
 }
 
