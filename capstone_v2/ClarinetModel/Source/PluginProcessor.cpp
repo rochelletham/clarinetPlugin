@@ -26,7 +26,7 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
    // how many samples the component is going to draw
    // if give 32, will seem like the audiovisualizer is drawing really fast because
    // there aren't that many samples that need to be drawn/displayed
-   // 256 samples will be easier to see (more "zoomed out")
+   // 256 samples will be easier to see
    audioVisualizer.setBufferSize(kBufferSize);
 
 }

@@ -14,8 +14,9 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
    // This is where our plugin’s editor size is set.
-   setSize (780, 500);
+   setSize (700, 400);
 
+   setWantsKeyboardFocus(true);
    getLookAndFeel().setColour (Slider::thumbColourId, Colours::orange);
    getLookAndFeel().setColour(Slider::trackColourId, Colours::floralwhite);
    setSliders();
@@ -30,7 +31,7 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
 void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&zoomSlider);
    zoomSlider.setLookAndFeel((&otherLookAndFeel));
-   zoomSlider.setRange(100, 1024);
+   zoomSlider.setRange(50, 1024);
    zoomSlider.setSliderStyle(Slider::LinearVertical);
    zoomSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
                               kTextWidth, kTextHeight);
@@ -61,12 +62,11 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
                               kTextWidth, kTextHeight);
    freqSlider.setNumDecimalPlacesToDisplay(2);
 
-   // TODO: fix gate toggle
+   // GATE BUTTON
    addAndMakeVisible(&gateButton);
-
    gateButton.onStateChange = [this] {
       auto gateState = gateButton.getState();
-      if (gateState == gateButton.buttonDown) {
+      if (gateState == gateButton.buttonDown || KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey)) {
              audioProcessor.setGate(true);
       } else {
          audioProcessor.setGate(false);
@@ -191,6 +191,10 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    outGainSlider.setNumDecimalPlacesToDisplay(2);
    outGainSlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentWhite);
 
+   //settingsButton
+//   addAndMakeVisible(settingsButton);
+//   settingsButton.addListener(this);
+
 }
 
 void clarinetPluginAudioProcessorEditor::setLabels() {
@@ -226,9 +230,9 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
    bellOpeningLabel.setJustificationType(Justification::centredTop);
 
    addAndMakeVisible(&envAttackLabel);
-   outGainLabel.setText ("Envelope Attack", dontSendNotification);
-   outGainLabel.attachToComponent (&envAttackSlider, false);
-   outGainLabel.setJustificationType(Justification::centredTop);
+   envAttackLabel.setText ("Envelope Attack", dontSendNotification);
+   envAttackLabel.attachToComponent (&envAttackSlider, false);
+   envAttackLabel.setJustificationType(Justification::centredTop);
 
    addAndMakeVisible(&outGainLabel);
    outGainLabel.setText ("Gain", dontSendNotification);
@@ -248,6 +252,24 @@ clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
 }
 
 //==============================================================================
+//void clarinetPluginAudioProcessorEditor::openAudioSettings() {
+//   auto devComp = std::make_unique<AudioDeviceSelectorComponent>(deviceManager,0,2,0,2,true, false, true, false);
+//   DialogWindow::LaunchOptions dw;
+//   devComp->setSize(500, 270);
+//   dw.dialogTitle = "Audio Settings";
+//   dw.useNativeTitleBar = true;
+//   dw.resizable = false;
+//   dw.dialogBackgroundColour = this->getLookAndFeel().findColour(ResizableWindow::backgroundColourId);
+//   dw.DialogWindow::LaunchOptions::content.setOwned(devComp.release());
+//   dw.DialogWindow::LaunchOptions::launchAsync();
+//}
+
+//bool clarinetPluginAudioProcessorEditor::keyPressed(KeyPress &k) {
+//   if(k == KeyPress::spaceKey) {
+//      std::cout << "pressed space key" <<std::endl;
+//   }
+//}
+
 void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)

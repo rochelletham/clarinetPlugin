@@ -11,10 +11,14 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+using namespace juce;
 //==============================================================================
 /**
 */
-class clarinetPluginAudioProcessorEditor  : public juce::AudioProcessorEditor {
+class clarinetPluginAudioProcessorEditor  :
+//   public AudioAppComponent,
+//   public Button::Listener,
+   public AudioProcessorEditor {
 
 public:
    clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor&);
@@ -23,8 +27,8 @@ public:
     //==============================================================================
    void paint (juce::Graphics&) override;
    void resized() override;
-//   void buttonClicked(juce::Button* button) override;
-
+//   void openAudioSettings();
+//   bool keyPressed(KeyPress &k) override;
    float kFreqDEF = 146.832;
    float kEnvDEF = 1.0;
    float kBendDEF = 0;
@@ -40,6 +44,7 @@ public:
 
    float kTextWidth = 55;
    float kTextHeight = 20;
+
 private:
    /**
     initializes the gui sliders
@@ -53,7 +58,9 @@ private:
     // access the processor object that created it.
    clarinetPluginAudioProcessor& audioProcessor;
 
+
    juce::LookAndFeel_V4 otherLookAndFeel;
+   TextButton settingsButton {"Audio Settings"};
 
    juce::TextButton gateButton;
    juce::Slider freqSlider;

@@ -20,7 +20,7 @@ using namespace std;
 class dsp;
 class MapUI;
 
-class clarinetPluginAudioProcessor  : public juce::AudioProcessor
+class clarinetPluginAudioProcessor : public juce::AudioProcessor
 {
 public:
     //==============================================================================
