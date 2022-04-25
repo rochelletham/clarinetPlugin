@@ -18,14 +18,25 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
    setResizable(true, true);
    setResizeLimits(660, 460, 660*5, 460*5);
    setWantsKeyboardFocus(true);
+   quitting = false;
    setSliders();
    setLabels();
 
    addAndMakeVisible(audioProcessor.audioVisualizer);
    audioProcessor.audioVisualizer.setColours(Colours::black,
                                              Colours::whitesmoke.withAlpha(0.5f));
+   // Add our editor as the keyboard state's listener.
+   keyboardState.addListener(this);
+   // Pass the keyboard state to the keyboard component.
+   midiKeyboard = std::make_unique<MidiKeyboardComponent>(keyboardState, MidiKeyboardComponent::horizontalKeyboard);
+   midiKeyboard->setOctaveForMiddleC(4);
+   addAndMakeVisible(*midiKeyboard);
+
+   setMidiInput(1);
 
 }
+
+
 //TODO: 1) midi -- sliderval change without changing sound --> lambda changes freq
 //TODO: look at slider listener ^
 //TODO: or convert midi to freq (already have lambda callbacks)
@@ -189,10 +200,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    outGainSlider.setNumDecimalPlacesToDisplay(2);
    outGainSlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentWhite);
 
-   //settingsButton
-//   addAndMakeVisible(settingsButton);
-//   settingsButton.addListener(this);
-
 }
 
 void clarinetPluginAudioProcessorEditor::setLabels() {
@@ -200,6 +207,10 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
    // TODO: set label to width of text, height 24
    // TODO: set to widest text length (getstringwidth)
    // TODO: :draw rectangles around the labels for dimensions
+
+   addAndMakeVisible(&TEST);
+   TEST.setText("TEST", dontSendNotification);
+
    addAndMakeVisible(&freqLabel);
    freqLabel.setText("Freq", dontSendNotification);
    float freqStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Freq");
@@ -282,8 +293,67 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
 
 clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
 {
+   //Remove this component as keyboard states listener.
+   keyboardState.removeListener(this);
+   quitting = true;
+   deviceManager.removeMidiInputDeviceCallback("", this);
 }
 
+//============================== MIDI FUNCTIONS =============================//
+/** Starts listening to a MIDI input device, enabling it if necessary. */
+void clarinetPluginAudioProcessorEditor::setMidiInput (int index)
+{
+    auto input = juce::MidiInput::getAvailableDevices()[index];
+   std::cout << "Got input!: " << input.name <<std::endl;
+    if (! deviceManager.isMidiInputDeviceEnabled (input.identifier))
+        deviceManager.setMidiInputDeviceEnabled (input.identifier, true);
+
+    deviceManager.addMidiInputDeviceCallback (input.identifier, this);
+}
+
+void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int chan, int note, float vel) {
+   auto m = MidiMessage::noteOn (chan, note, vel);
+   // convert midi to freq
+   float freq = (440) * pow(2, float((note - 69) / 12.0));
+   std::cout << "midi key: " << note << ", freq: " << freq <<std::endl;
+   gateButton.setState(juce::Button::buttonDown);
+   freqSlider.setValue(freq);
+
+
+}
+
+void clarinetPluginAudioProcessorEditor::handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber,
+                    float velocity) {
+   if (! isAddingFromMidiInput)
+  {
+      auto m = juce::MidiMessage::noteOff (midiChannel, midiNoteNumber);
+//      m.setTimeStamp (juce::Time::getMillisecondCounterHiRes() * 0.001);
+//      postMessageToList (m, "On-Screen Keyboard");
+  }
+   gateButton.setState(juce::Button::buttonNormal);
+}
+
+void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage &message) {
+   if (quitting || message.isActiveSense()) {
+         return;
+      }
+
+   const juce::ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
+   keyboardState.processNextMidiEvent (message);
+//   postMessageToList (message, source->getName());
+
+   //blocks message thread during update
+//   const MessageManagerLock mmlock;
+//   if (message.isNoteOn() || message.isNoteOff()) {if (! isAddingFromMidiInput)
+//      keyboardState.processNextMidiEvent (message);
+//   }
+}
+
+
+//void clarinetPluginAudioProcessorEditor::postMessageToList (const juce::MidiMessage& message,
+//                                                            const juce::String& source) {
+//  (new IncomingMessageCallback (this, message, source))->post();
+//}
 //==============================================================================
 void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
@@ -309,11 +379,15 @@ void clarinetPluginAudioProcessorEditor::resized()
    auto visualSpace = area.removeFromBottom(150);
    visualSpace.reduce(20,5);
    visualSpace.removeFromTop(32);
+
    gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
    zoomSlider.setBounds(visualSpace.removeFromLeft(sliderWidth));
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
+//   midiKeyboard->setBounds(keySpace);
+   auto keySpace = visualSpace.removeFromBottom(100);
+   TEST.setBounds(keySpace);
 
    auto sliderGroup = area.removeFromTop(400);
    freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));

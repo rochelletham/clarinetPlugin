@@ -28,7 +28,7 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
    // there aren't that many samples that need to be drawn/displayed
    // 256 samples will be easier to see
    audioVisualizer.setBufferSize(kBufferSize);
-
+   
 }
 
 clarinetPluginAudioProcessor::~clarinetPluginAudioProcessor()
