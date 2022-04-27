@@ -44,8 +44,8 @@ public:
    float kOutGainDEF = 0.0;
 
    float kTextWidth = 55;
-   float kTextHeight = 20;
-
+   float kTextHeight = 40;
+   float kNumHeight = 20;
    //==============================================================================
    // MidiInputCallback overrides
 
@@ -81,7 +81,7 @@ public:
 //   void postMessageToList (const juce::MidiMessage& message, const juce::String& source);
 
    // setting midi input
-   void setMidiInput (int index);
+   void setMidiInput ();
 
    bool quitting;
 
@@ -112,24 +112,22 @@ private:
    juce::Slider outGainSlider;
    juce::Slider zoomSlider;
 
-      // These parameters are not available in the clarinet midi version. 
-      //   juce::Slider pressureSlider;
-      //   juce::Slider breathCutoffSlider;
-      //   juce::Slider breathGainSlider;
-      //   juce::Slider clarinetLenSlider;
-
    juce::Label freqLabel;
+   juce::Label envLabel;
    juce::Label envAttackLabel;
    juce::Label bendLabel;
+   juce::Label vibratoLabel;
    juce::Label vibratoFreqLabel;
    juce::Label vibratoGainLabel;
+   juce::Label reedLabel;
    juce::Label reedStiffnessLabel;
+   juce::Label bellLabel;
    juce::Label bellOpeningLabel;
    juce::Label outGainLabel;
    juce::Label gateLabel;
    juce::Label zoomLabel;
 
-   juce::Label TEST;
+
    std::vector<string> labelText = {"Freq", "Bend", "Rate", "Gain",
                                     "Envelope\nAttack", "Reed\nStiffness",
                                     "Bell\nOpening", "Out Gain", "Zoom"};

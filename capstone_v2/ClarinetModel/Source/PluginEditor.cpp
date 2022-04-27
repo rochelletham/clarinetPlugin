@@ -14,10 +14,8 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
    // This is where our plugin’s editor size is set.
-   setSize (660, 460);
-   setResizable(true, true);
-   setResizeLimits(660, 460, 660*5, 460*5);
-   setWantsKeyboardFocus(true);
+   setSize (680, 460);
+   setResizable(false, false);
    quitting = false;
    setSliders();
    setLabels();
@@ -31,36 +29,27 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
    midiKeyboard = std::make_unique<MidiKeyboardComponent>(keyboardState, MidiKeyboardComponent::horizontalKeyboard);
    midiKeyboard->setOctaveForMiddleC(4);
    addAndMakeVisible(*midiKeyboard);
-
-   setMidiInput(1);
+   setMidiInput();
 
 }
 
-
-//TODO: 1) midi -- sliderval change without changing sound --> lambda changes freq
-//TODO: look at slider listener ^
-//TODO: or convert midi to freq (already have lambda callbacks)
 void clarinetPluginAudioProcessorEditor::setSliders() {
    addAndMakeVisible(&zoomSlider);
    zoomSlider.setRange(50, 1024);
    zoomSlider.setSliderStyle(Slider::LinearVertical);
    zoomSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                              kTextWidth, kTextHeight);
+                              kTextWidth, kNumHeight);
    zoomSlider.onValueChange = [this] {
       std::cout << "zoomSlider: " << zoomSlider.getValue() <<std::endl;
       audioProcessor.audioVisualizer.setBufferSize(zoomSlider.getValue());
    };
    zoomSlider.setNumDecimalPlacesToDisplay(2);
-   zoomSlider.setColour(Slider::textBoxOutlineColourId,
-                        Colours::transparentWhite);
 
    addAndMakeVisible(&freqSlider);
    // range: E3 to C7
    freqSlider.setRange(146.832, 2093.005);
    freqSlider.setValue(audioProcessor.getFreq());
    freqSlider.setSliderStyle(Slider::LinearVertical);
-   freqSlider.setColour(Slider::textBoxOutlineColourId,
-                        Colours::transparentWhite);
    // lambda function instead of overriding slider listener funct.
    // update the freq value whenever the slider changes
    freqSlider.onValueChange = [this] {
@@ -69,20 +58,20 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    freqSlider.setDoubleClickReturnValue(true, kFreqDEF);
    freqSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                              kTextWidth, kTextHeight);
+                              kTextWidth, kNumHeight);
    freqSlider.setNumDecimalPlacesToDisplay(2);
 
    // GATE BUTTON
    addAndMakeVisible(&gateButton);
    gateButton.onStateChange = [this] {
       auto gateState = gateButton.getState();
-      if (gateState == gateButton.buttonDown || KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey)) {
-             audioProcessor.setGate(true);
+      if (gateState == gateButton.buttonDown) {
+         audioProcessor.setGate(true);
       } else {
          audioProcessor.setGate(false);
       }
    };
-   gateButton.setButtonText("gate");
+   gateButton.setButtonText(" gate ");
 
    addAndMakeVisible(&envAttackSlider);
    envAttackSlider.setSliderStyle(Slider::LinearVertical);
@@ -95,10 +84,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    envAttackSlider.setDoubleClickReturnValue(true, kEnvDEF);
    envAttackSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    envAttackSlider.setNumDecimalPlacesToDisplay(2);
-   envAttackSlider.setColour(Slider::textBoxOutlineColourId,
-                             Colours::transparentWhite);
 
    addAndMakeVisible(&bendSlider);
    bendSlider.setSliderStyle(Slider::LinearVertical);
@@ -111,10 +98,9 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    bendSlider.setDoubleClickReturnValue(true, kBendDEF);
    bendSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    bendSlider.setNumDecimalPlacesToDisplay(2);
-   bendSlider.setColour(Slider::textBoxOutlineColourId,
-                        Colours::transparentWhite);
+
 
    addAndMakeVisible(&vibratoFreqSlider);
    vibratoFreqSlider.setSliderStyle(Slider::LinearVertical);
@@ -128,10 +114,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    vibratoFreqSlider.setDoubleClickReturnValue(true, kVibratoFreqDEF);
    vibratoFreqSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    vibratoFreqSlider.setNumDecimalPlacesToDisplay(2);
-   vibratoFreqSlider.setColour(Slider::textBoxOutlineColourId,
-                               Colours::transparentWhite);
 
    addAndMakeVisible(&vibratoGainSlider);
    vibratoGainSlider.setSliderStyle(Slider::LinearVertical);
@@ -145,10 +129,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    vibratoGainSlider.setDoubleClickReturnValue(true, kVibratoGainDEF);
    vibratoGainSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    vibratoGainSlider.setNumDecimalPlacesToDisplay(2);
-   vibratoGainSlider.setColour(Slider::textBoxOutlineColourId,
-                               Colours::transparentWhite);
 
    addAndMakeVisible(&reedStiffnessSlider);
    reedStiffnessSlider.setSliderStyle(Slider::LinearVertical);
@@ -162,10 +144,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    reedStiffnessSlider.setDoubleClickReturnValue(true, kReedStiffDEF);
    reedStiffnessSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    reedStiffnessSlider.setNumDecimalPlacesToDisplay(2);
-   reedStiffnessSlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentWhite);
-
 
    addAndMakeVisible(&bellOpeningSlider);
    bellOpeningSlider.setSliderStyle(Slider::LinearVertical);
@@ -179,9 +159,9 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    bellOpeningSlider.setDoubleClickReturnValue(true, kBellOpeningDEF);
    bellOpeningSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    bellOpeningSlider.setNumDecimalPlacesToDisplay(2);
-   bellOpeningSlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentWhite);
+
 
    addAndMakeVisible(&outGainSlider);
    outGainSlider.setSliderStyle(Slider::LinearVertical);
@@ -196,9 +176,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    };
    outGainSlider.setDoubleClickReturnValue(true, kOutGainDEF);
    outGainSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
-                                   kTextWidth, kTextHeight);
+                                   kTextWidth, kNumHeight);
    outGainSlider.setNumDecimalPlacesToDisplay(2);
-   outGainSlider.setColour(Slider::textBoxOutlineColourId, Colours::transparentWhite);
 
 }
 
@@ -208,83 +187,70 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
    // TODO: set to widest text length (getstringwidth)
    // TODO: :draw rectangles around the labels for dimensions
 
-   addAndMakeVisible(&TEST);
-   TEST.setText("TEST", dontSendNotification);
+   addAndMakeVisible(&vibratoLabel);
+   vibratoLabel.setText("Vibrato\nRate       Gain", dontSendNotification);
+//   vibratoLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   vibratoLabel.setJustificationType(Justification::centredBottom);
+   vibratoLabel.setSize(vibratoLabel.getWidth(), kTextHeight);
 
    addAndMakeVisible(&freqLabel);
    freqLabel.setText("Freq", dontSendNotification);
-   float freqStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Freq");
-   // width, height
-   freqLabel.setSize(freqStrWidth, 40);
-   freqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   freqLabel.attachToComponent (&freqSlider, false);
-   freqLabel.setJustificationType(Justification::centred);
+   freqLabel.setSize(freqLabel.getWidth(), kTextHeight);
+//   freqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   freqLabel.setJustificationType(Justification::centredBottom);
 
    addAndMakeVisible(&bendLabel);
    bendLabel.setText ("Bend", dontSendNotification);
-   float bendStrWidth = bendLabel.getFont().getStringWidthFloat("Bend");
-   bendLabel.setSize(bendStrWidth, 40);
-   bendLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   bendLabel.attachToComponent (&bendSlider, false);
-   bendLabel.setJustificationType(Justification::centred);
+   bendLabel.setSize(bendLabel.getWidth(), kTextHeight);
+//   bendLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   bendLabel.setJustificationType(Justification::centredBottom);
 
-   addAndMakeVisible(&vibratoFreqLabel);
-   vibratoFreqLabel.setText ("Rate", dontSendNotification);
-   float vibStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Rate");
-   vibratoFreqLabel.setSize(vibStrWidth, 40);
-   vibratoFreqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   vibratoFreqLabel.attachToComponent (&vibratoFreqSlider, false);
-   vibratoFreqLabel.setJustificationType(Justification::centred);
+//   addAndMakeVisible(&vibratoFreqLabel);
+//   vibratoFreqLabel.setText ("Rate", dontSendNotification);
+//   float vibStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Rate");
+//   vibratoFreqLabel.setSize(vibStrWidth, 40);
+//   vibratoFreqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+//   vibratoFreqLabel.attachToComponent (&vibratoFreqSlider, false);
+//   vibratoFreqLabel.setJustificationType(Justification::centred);
 
-   addAndMakeVisible(&vibratoGainLabel);
-   vibratoGainLabel.setText ("Gain", dontSendNotification);
-   float vibGainStrWidth = vibratoGainLabel.getFont().getStringWidthFloat("Gain");
-   vibratoGainLabel.setSize(vibGainStrWidth, 40);
-   vibratoGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   vibratoGainLabel.attachToComponent (&vibratoGainSlider, false);
-   vibratoGainLabel.setJustificationType(Justification::centred);
+//   addAndMakeVisible(&vibratoGainLabel);
+//   vibratoGainLabel.setText ("Gain", dontSendNotification);
+//   float vibGainStrWidth = vibratoGainLabel.getFont().getStringWidthFloat("Gain");
+//   vibratoGainLabel.setSize(vibGainStrWidth, 40);
+////   vibratoGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+//   vibratoGainLabel.attachToComponent (&vibratoGainSlider, false);
+//   vibratoGainLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&reedStiffnessLabel);
-   reedStiffnessLabel.setText ("Reed\nStiffness", dontSendNotification);
-   float reedStrWidth = reedStiffnessLabel.getFont().getStringWidthFloat("Reed\nStiffness");
-   float reedStrHeight = reedStiffnessLabel.getFont().getHeight();
-   kTextHeight = reedStrHeight;
-   std::cout << kTextHeight << std::endl;
-   reedStiffnessLabel.setSize(reedStrWidth, reedStrHeight);
-   reedStiffnessLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   reedStiffnessLabel.attachToComponent (&reedStiffnessSlider, false);
-   reedStiffnessLabel.setJustificationType(Justification::centred);
+   reedStiffnessLabel.setText ("Reed Stiffness", dontSendNotification);
+   reedStiffnessLabel.setSize(reedStiffnessLabel.getWidth(), kTextHeight);
+//   reedStiffnessLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   reedStiffnessLabel.setJustificationType(Justification::centredBottom);
 
    addAndMakeVisible(&bellOpeningLabel);
-   bellOpeningLabel.setText ("Bell\nOpening", dontSendNotification);
-   float bellStrWidth = bellOpeningLabel.getFont().getStringWidthFloat("Bell\nOpening");
-   bellOpeningLabel.setSize(bellStrWidth, 40);
-   bellOpeningLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   bellOpeningLabel.attachToComponent (&bellOpeningSlider, false);
-   bellOpeningLabel.setJustificationType(Justification::centred);
+   bellOpeningLabel.setText ("Bell Opening", dontSendNotification);
+   bellOpeningLabel.setSize(bellOpeningLabel.getWidth(), kTextHeight);
+//   bellOpeningLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   bellOpeningLabel.setJustificationType(Justification::centredBottom);
+
 
    addAndMakeVisible(&envAttackLabel);
-   envAttackLabel.setText ("Envelope\nAttack", dontSendNotification);
-   float envStrWidth = envAttackLabel.getFont().getStringWidthFloat("Envelope\nAttack");
-   envAttackLabel.setSize(envStrWidth, 40);
-   envAttackLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   envAttackLabel.attachToComponent (&envAttackSlider, false);
-   envAttackLabel.setJustificationType(Justification::centred);
+   envAttackLabel.setText ("Envelope Attack", dontSendNotification);
+   envAttackLabel.setSize(envAttackLabel.getWidth(), kTextHeight);
+//   envAttackLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   envAttackLabel.setJustificationType(Justification::centredBottom);
 
    addAndMakeVisible(&outGainLabel);
    outGainLabel.setText ("Gain", dontSendNotification);
-   float gainStrWidth = outGainLabel.getFont().getStringWidthFloat("Gain");
-   outGainLabel.setSize(gainStrWidth, 40);
-   outGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   outGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   outGainLabel.attachToComponent (&outGainSlider, false);
-   outGainLabel.setJustificationType(Justification::centred);
+   outGainLabel.setSize(outGainLabel.getWidth(), kTextHeight);
+   outGainLabel.attachToComponent(&outGainSlider, false);
+//   outGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   outGainLabel.setJustificationType(Justification::centredBottom);
 
    addAndMakeVisible(&zoomLabel);
    zoomLabel.setText ("Zoom", dontSendNotification);
-   float zoomStrWidth = zoomLabel.getFont().getStringWidthFloat("Zoom");
-   zoomLabel.setSize(zoomStrWidth, 40);
-   zoomLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   zoomLabel.setSize(zoomLabel.getWidth(), kTextHeight);
+//   zoomLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    zoomLabel.attachToComponent (&zoomSlider, false);
    zoomLabel.setJustificationType(Justification::centred);
 
@@ -301,25 +267,36 @@ clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
 
 //============================== MIDI FUNCTIONS =============================//
 /** Starts listening to a MIDI input device, enabling it if necessary. */
-void clarinetPluginAudioProcessorEditor::setMidiInput (int index)
+void clarinetPluginAudioProcessorEditor::setMidiInput ()
 {
-    auto input = juce::MidiInput::getAvailableDevices()[index];
-   std::cout << "Got input!: " << input.name <<std::endl;
+   auto input_list = juce::MidiInput::getAvailableDevices();
+   MidiDeviceInfo input;
+   for (auto i : input_list) {
+      if (i.name != "IAC Driver Bus 1") {
+         input = i;
+         std::cout << "setted input to " << i.name <<std::endl;
+         break;
+      }
+   }
+   if (input.name == "") {
+      std::cout << "Couldn't find external midi keyboard :(" << std::endl;
+   }
     if (! deviceManager.isMidiInputDeviceEnabled (input.identifier))
         deviceManager.setMidiInputDeviceEnabled (input.identifier, true);
-
+   std::cout << "midi device enabled" << std::endl;
     deviceManager.addMidiInputDeviceCallback (input.identifier, this);
+   std::cout << "added midi input device callback" << std::endl;
 }
 
 void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int chan, int note, float vel) {
    auto m = MidiMessage::noteOn (chan, note, vel);
    // convert midi to freq
    float freq = (440) * pow(2, float((note - 69) / 12.0));
-   std::cout << "midi key: " << note << ", freq: " << freq <<std::endl;
+   std::cout << "MIDI key: " << note << ", freq: " << freq <<std::endl;
    gateButton.setState(juce::Button::buttonDown);
+   std::cout << "changed gate" << std::endl;
    freqSlider.setValue(freq);
-
-
+   std::cout << "changed freq slider" << std::endl;
 }
 
 void clarinetPluginAudioProcessorEditor::handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber,
@@ -359,7 +336,7 @@ void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-   g.setFont (15.0f);
+   g.setFont (kTextHeight);
 
 }
 
@@ -367,14 +344,23 @@ void clarinetPluginAudioProcessorEditor::resized()
 {
    // the area of the entire rectangle of the plugin window
    auto area = getLocalBounds();
-   area.reduce(8,8);
+   area.reduce(12,8);
    auto sliderWidth = 60;
-   auto bottomLine = area.removeFromBottom(24);
-   area.removeFromTop(48);
+   area.removeFromBottom(24);
+   area.removeFromTop(24);
+   area.removeFromLeft(12);
+   auto lineOne = area.removeFromTop(24);
+   freqLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
+   bendLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
+   vibratoLabel.setBounds(lineOne.removeFromLeft(sliderWidth*2));
+   envAttackLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
 
-   outGainLabel.setBounds(bottomLine.removeFromBottom(12));
+
    outGainSlider.setBounds(area.removeFromRight(sliderWidth));
-
+   lineOne.removeFromRight(sliderWidth*2);
+   bellOpeningLabel.setBounds(lineOne.removeFromRight(sliderWidth));
+   reedStiffnessLabel.setBounds(lineOne.removeFromRight(sliderWidth));
+   area.removeFromTop(12);
    //================== AUDIO VISUALIZER ==================//
    auto visualSpace = area.removeFromBottom(150);
    visualSpace.reduce(20,5);
@@ -385,11 +371,11 @@ void clarinetPluginAudioProcessorEditor::resized()
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
-//   midiKeyboard->setBounds(keySpace);
-   auto keySpace = visualSpace.removeFromBottom(100);
-   TEST.setBounds(keySpace);
 
-   auto sliderGroup = area.removeFromTop(400);
+//   auto keySpace = visualSpace.removeFromBottom(100);
+//   midiKeyboard->setBounds(keySpace);
+
+   auto sliderGroup = area.removeFromTop(280);
    freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
    bendSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
    vibratoFreqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
@@ -399,7 +385,6 @@ void clarinetPluginAudioProcessorEditor::resized()
    sliderGroup.removeFromRight(sliderWidth);
    bellOpeningSlider.setBounds(sliderGroup.removeFromRight(sliderWidth));
    reedStiffnessSlider.setBounds(sliderGroup.removeFromRight(sliderWidth));
-   sliderGroup.removeFromBottom(48);
 
 
 }
