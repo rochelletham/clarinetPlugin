@@ -26,9 +26,11 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
    // Add our editor as the keyboard state's listener.
    keyboardState.addListener(this);
    // Pass the keyboard state to the keyboard component.
-   midiKeyboard = std::make_unique<MidiKeyboardComponent>(keyboardState, MidiKeyboardComponent::horizontalKeyboard);
+   midiKeyboard = std::make_unique<MidiKeyboardComponent>(keyboardState,
+                                    MidiKeyboardComponent::horizontalKeyboard);
    midiKeyboard->setOctaveForMiddleC(4);
    addAndMakeVisible(*midiKeyboard);
+   keyboardState.addListener(this);
    setMidiInput();
 
 }
@@ -242,7 +244,7 @@ clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
    //Remove this component as keyboard states listener.
    keyboardState.removeListener(this);
    quitting = true;
-   deviceManager.removeMidiInputDeviceCallback("", this);
+   deviceManager.removeMidiInputDeviceCallback(input.name, this);
 }
 
 //============================== MIDI FUNCTIONS =============================//
@@ -250,7 +252,6 @@ clarinetPluginAudioProcessorEditor::~clarinetPluginAudioProcessorEditor()
 void clarinetPluginAudioProcessorEditor::setMidiInput ()
 {
    auto input_list = juce::MidiInput::getAvailableDevices();
-   MidiDeviceInfo input;
    for (auto i : input_list) {
       if (i.name != "IAC Driver Bus 1") {
          input = i;
@@ -261,10 +262,13 @@ void clarinetPluginAudioProcessorEditor::setMidiInput ()
    if (input.name == "") {
       std::cout << "Couldn't find external midi keyboard :(" << std::endl;
    }
-    if (! deviceManager.isMidiInputDeviceEnabled (input.identifier))
+   //   enables the device if it is currently disabled
+   if (! deviceManager.isMidiInputDeviceEnabled (input.identifier)) {
         deviceManager.setMidiInputDeviceEnabled (input.identifier, true);
-   std::cout << "midi device enabled" << std::endl;
-    deviceManager.addMidiInputDeviceCallback (input.identifier, this);
+        std::cout << "midi device enabled" << std::endl;
+   }
+
+   deviceManager.addMidiInputDeviceCallback (input.identifier, this);
    std::cout << "added midi input device callback" << std::endl;
 }
 
@@ -279,11 +283,12 @@ void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int ch
 
 void clarinetPluginAudioProcessorEditor::handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber,
                     float velocity) {
-   if (! isAddingFromMidiInput)
+   if (!isAddingFromMidiInput)
   {
       auto m = juce::MidiMessage::noteOff (midiChannel, midiNoteNumber);
+      gateButton.setState(juce::Button::buttonNormal);
   }
-   gateButton.setState(juce::Button::buttonNormal);
+
 }
 
 void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage &message) {
@@ -334,14 +339,19 @@ void clarinetPluginAudioProcessorEditor::resized()
    visualSpace.reduce(20,5);
    visualSpace.removeFromTop(32);
 
+   auto keySpace = visualSpace.removeFromBottom(50);
+
+   midiKeyboard->setBounds(keySpace);
+   std::cout << "setted midiKeyboard space" << std::endl;
    gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
+   std::cout << "setted gate button" << std::endl;
    zoomSlider.setBounds(visualSpace.removeFromLeft(sliderWidth));
+   std::cout << "setted zoom button" << std::endl;
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
 
-//   auto keySpace = visualSpace.removeFromBottom(100);
-//   midiKeyboard->setBounds(keySpace);
+
 
    auto sliderGroup = area.removeFromTop(280);
    freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));

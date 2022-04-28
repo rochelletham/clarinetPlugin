@@ -138,9 +138,11 @@ private:
 
    /// A juce component that displays an interactive midi keyboard.
    std::unique_ptr<juce::MidiKeyboardComponent> midiKeyboard;
-
-   juce::AudioDeviceManager deviceManager;        // used to find which MIDI input devices are enabled
+   // used to find which MIDI input devices are enabled
+   juce::AudioDeviceManager deviceManager;
+   MidiDeviceInfo input;
    int lastInputIndex = 0;
+
    // indicates that MIDI data is arriving from an external source,
    // rather than mouse-clicks on the on-screen keyboard.
    bool isAddingFromMidiInput = false;
