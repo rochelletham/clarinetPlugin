@@ -40,7 +40,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    zoomSlider.setTextBoxStyle(Slider::TextBoxBelow, false,
                               kTextWidth, kNumHeight);
    zoomSlider.onValueChange = [this] {
-      std::cout << "zoomSlider: " << zoomSlider.getValue() <<std::endl;
+//      std::cout << "zoomSlider: " << zoomSlider.getValue() <<std::endl;
       audioProcessor.audioVisualizer.setBufferSize(zoomSlider.getValue());
    };
    zoomSlider.setNumDecimalPlacesToDisplay(2);
@@ -53,7 +53,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    // lambda function instead of overriding slider listener funct.
    // update the freq value whenever the slider changes
    freqSlider.onValueChange = [this] {
-      std::cout << "freqSlider: " << freqSlider.getValue() <<std::endl;
+//      std::cout << "freqSlider: " << freqSlider.getValue() <<std::endl;
       audioProcessor.setFreq(freqSlider.getValue());
    };
    freqSlider.setDoubleClickReturnValue(true, kFreqDEF);
@@ -79,7 +79,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    envAttackSlider.setValue(audioProcessor.getEnvAttack());
    envAttackSlider.setRange(1.0, 30.0);
    envAttackSlider.onValueChange = [this] {
-      std::cout << "envAttackSlider: " << envAttackSlider.getValue() <<std::endl;
+//      std::cout << "envAttackSlider: " << envAttackSlider.getValue() <<std::endl;
       audioProcessor.setEnvAttack(envAttackSlider.getValue());
    };
    envAttackSlider.setDoubleClickReturnValue(true, kEnvDEF);
@@ -93,7 +93,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    bendSlider.setValue(audioProcessor.getBend());
    bendSlider.setRange(-2, 2);
    bendSlider.onValueChange = [this] {
-      std::cout << "bendSlider: " << bendSlider.getValue() <<std::endl;
+//      std::cout << "bendSlider: " << bendSlider.getValue() <<std::endl;
       audioProcessor.setBend(bendSlider.getValue());
    };
    bendSlider.setDoubleClickReturnValue(true, kBendDEF);
@@ -109,7 +109,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    vibratoFreqSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    vibratoFreqSlider.onValueChange = [this] {
-      std::cout << "vibratoFreqSlider: " <<vibratoFreqSlider.getValue() <<std::endl;
+//      std::cout << "vibratoFreqSlider: " <<vibratoFreqSlider.getValue() <<std::endl;
       audioProcessor.setVibratoFreq(vibratoFreqSlider.getValue());
    };
    vibratoFreqSlider.setDoubleClickReturnValue(true, kVibratoFreqDEF);
@@ -124,7 +124,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    vibratoGainSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    vibratoGainSlider.onValueChange = [this] {
-      std::cout << "vibratoGainSlider: " <<vibratoGainSlider.getValue() <<std::endl;
+//      std::cout << "vibratoGainSlider: " <<vibratoGainSlider.getValue() <<std::endl;
       audioProcessor.setVibratoGain(vibratoGainSlider.getValue());
    };
    vibratoGainSlider.setDoubleClickReturnValue(true, kVibratoGainDEF);
@@ -139,7 +139,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    reedStiffnessSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    reedStiffnessSlider.onValueChange = [this] {
-      std::cout << "reedStiffness: " <<reedStiffnessSlider.getValue() <<std::endl;
+//      std::cout << "reedStiffness: " <<reedStiffnessSlider.getValue() <<std::endl;
       audioProcessor.setReedStiffness(reedStiffnessSlider.getValue());
    };
    reedStiffnessSlider.setDoubleClickReturnValue(true, kReedStiffDEF);
@@ -154,7 +154,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    bellOpeningSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    bellOpeningSlider.onValueChange = [this] {
-      std::cout << "bellOpening: " <<bellOpeningSlider.getValue() <<std::endl;
+//      std::cout << "bellOpening: " <<bellOpeningSlider.getValue() <<std::endl;
       audioProcessor.setBellOpening(bellOpeningSlider.getValue());
    };
    bellOpeningSlider.setDoubleClickReturnValue(true, kBellOpeningDEF);
@@ -170,7 +170,7 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    outGainSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    outGainSlider.onValueChange = [this] {
-      std::cout << "gain: " << outGainSlider.getValue() <<std::endl;
+//      std::cout << "gain: " << outGainSlider.getValue() <<std::endl;
       auto gain = outGainSlider.getValue();
       audioProcessor.setOutGain(gain);
    };
@@ -183,12 +183,8 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
 void clarinetPluginAudioProcessorEditor::setLabels() {
    // TODO: add unit labels for the text
-   // TODO: set label to width of text, height 24
-   // TODO: set to widest text length (getstringwidth)
-   // TODO: :draw rectangles around the labels for dimensions
-
    addAndMakeVisible(&vibratoLabel);
-   vibratoLabel.setText("Vibrato\nRate       Gain", dontSendNotification);
+   vibratoLabel.setText("Tremolo\nRate       Gain", dontSendNotification);
 //   vibratoLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    vibratoLabel.setJustificationType(Justification::centredBottom);
    vibratoLabel.setSize(vibratoLabel.getWidth(), kTextHeight);
@@ -204,22 +200,6 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
    bendLabel.setSize(bendLabel.getWidth(), kTextHeight);
 //   bendLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
    bendLabel.setJustificationType(Justification::centredBottom);
-
-//   addAndMakeVisible(&vibratoFreqLabel);
-//   vibratoFreqLabel.setText ("Rate", dontSendNotification);
-//   float vibStrWidth = vibratoFreqLabel.getFont().getStringWidthFloat("Rate");
-//   vibratoFreqLabel.setSize(vibStrWidth, 40);
-//   vibratoFreqLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-//   vibratoFreqLabel.attachToComponent (&vibratoFreqSlider, false);
-//   vibratoFreqLabel.setJustificationType(Justification::centred);
-
-//   addAndMakeVisible(&vibratoGainLabel);
-//   vibratoGainLabel.setText ("Gain", dontSendNotification);
-//   float vibGainStrWidth = vibratoGainLabel.getFont().getStringWidthFloat("Gain");
-//   vibratoGainLabel.setSize(vibGainStrWidth, 40);
-////   vibratoGainLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-//   vibratoGainLabel.attachToComponent (&vibratoGainSlider, false);
-//   vibratoGainLabel.setJustificationType(Justification::centred);
 
    addAndMakeVisible(&reedStiffnessLabel);
    reedStiffnessLabel.setText ("Reed Stiffness", dontSendNotification);
@@ -294,9 +274,7 @@ void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int ch
    float freq = (440) * pow(2, float((note - 69) / 12.0));
    std::cout << "MIDI key: " << note << ", freq: " << freq <<std::endl;
    gateButton.setState(juce::Button::buttonDown);
-   std::cout << "changed gate" << std::endl;
    freqSlider.setValue(freq);
-   std::cout << "changed freq slider" << std::endl;
 }
 
 void clarinetPluginAudioProcessorEditor::handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber,
@@ -304,8 +282,6 @@ void clarinetPluginAudioProcessorEditor::handleNoteOff (juce::MidiKeyboardState*
    if (! isAddingFromMidiInput)
   {
       auto m = juce::MidiMessage::noteOff (midiChannel, midiNoteNumber);
-//      m.setTimeStamp (juce::Time::getMillisecondCounterHiRes() * 0.001);
-//      postMessageToList (m, "On-Screen Keyboard");
   }
    gateButton.setState(juce::Button::buttonNormal);
 }
@@ -314,23 +290,15 @@ void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInp
    if (quitting || message.isActiveSense()) {
          return;
       }
-
-   const juce::ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
-   keyboardState.processNextMidiEvent (message);
-//   postMessageToList (message, source->getName());
-
    //blocks message thread during update
-//   const MessageManagerLock mmlock;
-//   if (message.isNoteOn() || message.isNoteOff()) {if (! isAddingFromMidiInput)
-//      keyboardState.processNextMidiEvent (message);
-//   }
+   const MessageManagerLock mmlock;
+   if (message.isNoteOn() || message.isNoteOff()) {
+      if (! isAddingFromMidiInput)
+         keyboardState.processNextMidiEvent (message);
+   }
 }
 
 
-//void clarinetPluginAudioProcessorEditor::postMessageToList (const juce::MidiMessage& message,
-//                                                            const juce::String& source) {
-//  (new IncomingMessageCallback (this, message, source))->post();
-//}
 //==============================================================================
 void clarinetPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
