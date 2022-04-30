@@ -18,9 +18,10 @@ using namespace juce;
 /**
 */
 class clarinetPluginAudioProcessorEditor  :
+   public AudioProcessorEditor,
    public juce::MidiInputCallback,
-   public juce::MidiKeyboardStateListener,
-   public AudioProcessorEditor {
+   public juce::MidiKeyboardStateListener
+    {
 
 public:
    clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor&);
@@ -137,7 +138,7 @@ private:
    juce::MidiKeyboardState keyboardState;
 
    /// A juce component that displays an interactive midi keyboard.
-   std::unique_ptr<juce::MidiKeyboardComponent> midiKeyboard;
+   juce::MidiKeyboardComponent midiKeyboard;
    // used to find which MIDI input devices are enabled
    juce::AudioDeviceManager deviceManager;
    MidiDeviceInfo input;

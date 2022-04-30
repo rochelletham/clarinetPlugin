@@ -11,10 +11,11 @@
 using namespace juce;
 //==============================================================================
 clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinetPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : midiKeyboard (keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard),
+      AudioProcessorEditor (&p), audioProcessor (p)
 {
    // This is where our plugin’s editor size is set.
-   setSize (680, 460);
+   setSize (680, 480);
    setResizable(false, false);
    quitting = false;
    setSliders();
@@ -25,11 +26,10 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
                                              Colours::whitesmoke.withAlpha(0.5f));
    // Add our editor as the keyboard state's listener.
    keyboardState.addListener(this);
+   // set the range to concert D3 to C7
+   midiKeyboard.setAvailableRange(50, 96);
+   addAndMakeVisible(midiKeyboard);
    // Pass the keyboard state to the keyboard component.
-   midiKeyboard = std::make_unique<MidiKeyboardComponent>(keyboardState,
-                                    MidiKeyboardComponent::horizontalKeyboard);
-   midiKeyboard->setOctaveForMiddleC(4);
-   addAndMakeVisible(*midiKeyboard);
    keyboardState.addListener(this);
    setMidiInput();
 
@@ -261,15 +261,15 @@ void clarinetPluginAudioProcessorEditor::setMidiInput ()
    }
    if (input.name == "") {
       std::cout << "Couldn't find external midi keyboard :(" << std::endl;
-   }
    //   enables the device if it is currently disabled
-   if (! deviceManager.isMidiInputDeviceEnabled (input.identifier)) {
+   } else if (! deviceManager.isMidiInputDeviceEnabled (input.identifier)) {
         deviceManager.setMidiInputDeviceEnabled (input.identifier, true);
         std::cout << "midi device enabled" << std::endl;
    }
 
    deviceManager.addMidiInputDeviceCallback (input.identifier, this);
    std::cout << "added midi input device callback" << std::endl;
+
 }
 
 void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int chan, int note, float vel) {
@@ -317,36 +317,34 @@ void clarinetPluginAudioProcessorEditor::resized()
 {
    // the area of the entire rectangle of the plugin window
    auto area = getLocalBounds();
-   area.reduce(12,8);
+   area.reduce(12,0);
    auto sliderWidth = 60;
-   area.removeFromBottom(24);
+   area.removeFromBottom(8);
    area.removeFromTop(24);
    area.removeFromLeft(12);
    auto lineOne = area.removeFromTop(24);
+   lineOne.removeFromLeft(sliderWidth);
    freqLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
    bendLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
+   lineOne.removeFromLeft(sliderWidth*0.5);
    vibratoLabel.setBounds(lineOne.removeFromLeft(sliderWidth*2));
+   lineOne.removeFromLeft(sliderWidth*0.5);
    envAttackLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
 
-
    outGainSlider.setBounds(area.removeFromRight(sliderWidth));
+
    lineOne.removeFromRight(sliderWidth*2);
-   bellOpeningLabel.setBounds(lineOne.removeFromRight(sliderWidth));
-   reedStiffnessLabel.setBounds(lineOne.removeFromRight(sliderWidth));
+   bellOpeningLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
+   reedStiffnessLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
    area.removeFromTop(12);
    //================== AUDIO VISUALIZER ==================//
-   auto visualSpace = area.removeFromBottom(150);
-   visualSpace.reduce(20,5);
+   auto visualSpace = area.removeFromBottom(180);
    visualSpace.removeFromTop(32);
 
-   auto keySpace = visualSpace.removeFromBottom(50);
-
-   midiKeyboard->setBounds(keySpace);
-   std::cout << "setted midiKeyboard space" << std::endl;
+   auto keySpace = visualSpace.removeFromBottom(70);
+   midiKeyboard.setBounds(keySpace);
    gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
-   std::cout << "setted gate button" << std::endl;
    zoomSlider.setBounds(visualSpace.removeFromLeft(sliderWidth));
-   std::cout << "setted zoom button" << std::endl;
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
@@ -354,15 +352,18 @@ void clarinetPluginAudioProcessorEditor::resized()
 
 
    auto sliderGroup = area.removeFromTop(280);
+   sliderGroup.removeFromLeft(sliderWidth);
    freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
    bendSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
+   sliderGroup.removeFromLeft(sliderWidth*0.5);
    vibratoFreqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
    vibratoGainSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
+   sliderGroup.removeFromLeft(sliderWidth*0.5);
    envAttackSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
 
-   sliderGroup.removeFromRight(sliderWidth);
-   bellOpeningSlider.setBounds(sliderGroup.removeFromRight(sliderWidth));
-   reedStiffnessSlider.setBounds(sliderGroup.removeFromRight(sliderWidth));
+//   sliderGroup.removeFromLeft(sliderWidth);
+   bellOpeningSlider.setBounds(sliderGroup.removeFromLeft(sliderWidth));
+   reedStiffnessSlider.setBounds(sliderGroup.removeFromLeft(sliderWidth));
 
 
 }

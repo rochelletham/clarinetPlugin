@@ -127,6 +127,14 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
 void clarinetPluginAudioProcessor::releaseResources()
 {
+//   for (int channel = 0; channel < 2; ++channel) {
+//      if (outputs[channel] != NULL) {
+//         delete[] outputs[channel];
+//      }
+//   }
+//   if (outputs != NULL) {
+//      delete[] outputs;
+//   }
    audioVisualizer.clear();
 }
 
@@ -231,7 +239,6 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
 //}
 
 void clarinetPluginAudioProcessor::setFreq(float freq) {
-   // TODO: convert midikey to freq
    fUI->setParamValue("/clarinet/midi/freq", freq);
 }
 
