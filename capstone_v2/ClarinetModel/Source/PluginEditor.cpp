@@ -289,23 +289,36 @@ void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInp
       }
    //blocks message thread during update
    const MessageManagerLock mmlock;
+   // when a MIDI key is pressed or lifted
    if (message.isNoteOn() || message.isNoteOff()) {
       if (! isAddingFromMidiInput)
          keyboardState.processNextMidiEvent (message);
    }
+   // when a MIDI pitch wheel receives value changes
    if (message.isPitchWheel()) {
       auto input = message.getPitchWheelValue();
-//      auto PITCH_WHEEL_MAX = 16383;
-//      auto PITCH_WHEEL_MIN = 0;
-      auto PITCH_WHEEL_CENTER = 8192;
-      auto bend = pow(4, (input - PITCH_WHEEL_CENTER)/4096*12);
-      std::cout << "input: " << input << " bend: " << bend << std::endl;
+      auto PITCH_WHEEL_MAX = 16383;
+      auto PITCH_WHEEL_MIN = 0;
+      // pitch wheel at center means 0 bend
+      // auto PITCH_WHEEL_CENTER = 8192;
+      auto sliderRange = bendSlider.getMaximum() - bendSlider.getMinimum();
+      // get the ratio of bendslider range to the MIDIkeyboard pitchwheel range
+      auto slope = (sliderRange) / (PITCH_WHEEL_MAX-PITCH_WHEEL_MIN);
+      // slider range: [-2,2] where 0 means 0 bend. need to translate bend down by 2.
+      auto bend = slope * (input - PITCH_WHEEL_MIN) -2;
       bendSlider.setValue(bend);
    }
 
+   // currently, the MIDI controller controls the reed stiffness slider
    if (message.isController()) {
-      std::cout << message.getControllerValue() << std::endl;
-
+      auto input = message.getControllerValue();
+      auto CONTROLLER_MAX = 127;
+      auto CONTROLLER_MIN = 0;
+      auto sliderRange = reedStiffnessSlider.getMaximum() - reedStiffnessSlider.getMinimum();
+      // get the ratio of bendslider range to the MIDIkeyboard pitchwheel range
+      auto slope = (sliderRange) / (CONTROLLER_MAX-CONTROLLER_MIN);
+      auto reed_param = slope * (input - CONTROLLER_MIN);
+      reedStiffnessSlider.setValue(reed_param);
    }
 }
 
