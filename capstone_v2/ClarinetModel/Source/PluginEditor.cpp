@@ -26,8 +26,8 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
                                              Colours::whitesmoke.withAlpha(0.5f));
    // Add our editor as the keyboard state's listener.
    keyboardState.addListener(this);
-   // set the range to concert G#1 to C7 (displays as G#0 to C6 on screen)
-   midiKeyboard.setAvailableRange(32, 96);
+   // set the range to concert G1 to C7 (displays as G#0 to C6 on screen)
+   midiKeyboard.setAvailableRange(31, 96);
    addAndMakeVisible(midiKeyboard);
    // Pass the keyboard state to the keyboard component.
    keyboardState.addListener(this);
@@ -342,7 +342,8 @@ void clarinetPluginAudioProcessorEditor::resized()
    area.removeFromLeft(12);
    auto keyboardSpace = area.removeFromBottom(70);
    // had issues with extra white spacing
-   keyboardSpace.removeFromRight(midiKeyboard.getKeyWidth()*3);
+   keyboardSpace.removeFromLeft(midiKeyboard.getKeyWidth()*2);
+   keyboardSpace.removeFromRight(midiKeyboard.getKeyWidth()*2+36);
    midiKeyboard.setBounds(keyboardSpace.removeFromLeft(midiKeyboard.getTotalKeyboardWidth()));
    area.removeFromBottom(24);
    auto lineOne = area.removeFromTop(24);
