@@ -26,7 +26,7 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
                                              Colours::whitesmoke.withAlpha(0.5f));
    // Add our editor as the keyboard state's listener.
    keyboardState.addListener(this);
-   // set the range to concert G#1 to C7
+   // set the range to concert G#1 to C7 (displays as G#0 to C6 on screen)
    midiKeyboard.setAvailableRange(32, 96);
    addAndMakeVisible(midiKeyboard);
    // Pass the keyboard state to the keyboard component.
@@ -223,9 +223,8 @@ void clarinetPluginAudioProcessorEditor::setLabels() {
 
    addAndMakeVisible(&zoomLabel);
    zoomLabel.setText ("Zoom", dontSendNotification);
-   zoomLabel.setSize(zoomLabel.getWidth(), kTextHeight);
+   zoomLabel.setSize(zoomLabel.getWidth(), kNumHeight);
 //   zoomLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   zoomLabel.attachToComponent (&zoomSlider, false);
    zoomLabel.setJustificationType(Justification::centred);
 
 }
@@ -295,6 +294,7 @@ void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInp
          keyboardState.processNextMidiEvent (message);
    }
    // when a MIDI pitch wheel receives value changes
+   // use this for mapping: https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
    if (message.isPitchWheel()) {
       auto input = message.getPitchWheelValue();
       auto PITCH_WHEEL_MAX = 16383;
@@ -340,8 +340,11 @@ void clarinetPluginAudioProcessorEditor::resized()
    auto sliderWidth = 60;
    area.removeFromTop(24);
    area.removeFromLeft(12);
-   midiKeyboard.setBounds(area.removeFromBottom(70));
-
+   auto keyboardSpace = area.removeFromBottom(70);
+   // had issues with extra white spacing
+   keyboardSpace.removeFromRight(midiKeyboard.getKeyWidth()*3);
+   midiKeyboard.setBounds(keyboardSpace.removeFromLeft(midiKeyboard.getTotalKeyboardWidth()));
+   area.removeFromBottom(24);
    auto lineOne = area.removeFromTop(24);
    lineOne.removeFromLeft(sliderWidth);
    freqLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
@@ -355,25 +358,23 @@ void clarinetPluginAudioProcessorEditor::resized()
    gainSliderArea.removeFromBottom(12);
    outGainSlider.setBounds(gainSliderArea);
 
-   lineOne.removeFromRight(sliderWidth*2);
+   lineOne.removeFromRight(sliderWidth);
    bellOpeningLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
    reedStiffnessLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
    area.removeFromTop(12);
    //================== AUDIO VISUALIZER ==================//
-   auto visualSpace = area.removeFromBottom(180);
+   auto visualSpace = area.removeFromBottom(150);
    visualSpace.removeFromTop(32);
    visualSpace.removeFromRight(30);
 
    gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
    auto zoomSliderSpace = visualSpace.removeFromLeft(sliderWidth);
-   zoomSliderSpace.removeFromBottom(70);
+   zoomLabel.setBounds(zoomSliderSpace.removeFromTop(kNumHeight));
    zoomSlider.setBounds(zoomSliderSpace.removeFromLeft(sliderWidth));
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
 
-//   auto keySpace = visualSpace.removeFromBottom(70);
-//   midiKeyboard.setBounds(keySpace);
    auto sliderGroup = area.removeFromTop(280);
    sliderGroup.removeFromLeft(sliderWidth);
    freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
@@ -384,7 +385,6 @@ void clarinetPluginAudioProcessorEditor::resized()
    sliderGroup.removeFromLeft(sliderWidth*0.5);
    envAttackSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
 
-//   sliderGroup.removeFromLeft(sliderWidth);
    bellOpeningSlider.setBounds(sliderGroup.removeFromLeft(sliderWidth));
    reedStiffnessSlider.setBounds(sliderGroup.removeFromLeft(sliderWidth));
 
