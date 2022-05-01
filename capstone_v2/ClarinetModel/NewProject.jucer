@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="EVeUs0" name="ClarinetModel" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
-              pluginFormats="buildAU,buildStandalone,buildVST3">
+              pluginFormats="buildAU,buildStandalone,buildVST3" pluginAAXCategory="8192">
   <MAINGROUP id="EemV8g" name="ClarinetModel">
     <GROUP id="{CFB1AFE7-92B6-3B05-1FF7-E52A0002090E}" name="Source">
       <FILE id="pB82jl" name="ClarinetPhysModMidi.h" compile="0" resource="0"
@@ -14,10 +14,6 @@
       <FILE id="lLQGzH" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="l5SODH" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="bPf0Hn" name="MidiMessageLog.cpp" compile="1" resource="0"
-            file="Source/MidiMessageLog.cpp"/>
-      <FILE id="LvsITt" name="MidiMessageLog.h" compile="0" resource="0"
-            file="Source/MidiMessageLog.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

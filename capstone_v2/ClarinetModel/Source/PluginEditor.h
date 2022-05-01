@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "MidiMessageLog.h"
 #include <vector>
 #include <string>
 using namespace juce;
