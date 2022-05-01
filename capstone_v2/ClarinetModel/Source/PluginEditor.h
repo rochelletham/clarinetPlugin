@@ -30,6 +30,7 @@ public:
     //==============================================================================
    void paint (juce::Graphics&) override;
    void resized() override;
+   // default note is E3
    float kFreqDEF = 146.832;
    float kEnvDEF = 1.0;
    float kBendDEF = 0;

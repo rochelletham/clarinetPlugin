@@ -19,7 +19,7 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), audioVisualizer(2)
+                       ), audioVisualizer(1)
 #endif
 {
    audioVisualizer.setRepaintRate(30);

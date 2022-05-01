@@ -26,8 +26,8 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
                                              Colours::whitesmoke.withAlpha(0.5f));
    // Add our editor as the keyboard state's listener.
    keyboardState.addListener(this);
-   // set the range to concert D3 to C7
-   midiKeyboard.setAvailableRange(50, 96);
+   // set the range to concert G#1 to C7
+   midiKeyboard.setAvailableRange(32, 96);
    addAndMakeVisible(midiKeyboard);
    // Pass the keyboard state to the keyboard component.
    keyboardState.addListener(this);
@@ -48,14 +48,13 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    zoomSlider.setNumDecimalPlacesToDisplay(2);
 
    addAndMakeVisible(&freqSlider);
-   // range: E3 to C7
-   freqSlider.setRange(146.832, 2093.005);
+   // range: G#1 to C6
+   freqSlider.setRange(51.91, 2093.005);
    freqSlider.setValue(audioProcessor.getFreq());
    freqSlider.setSliderStyle(Slider::LinearVertical);
    // lambda function instead of overriding slider listener funct.
    // update the freq value whenever the slider changes
    freqSlider.onValueChange = [this] {
-//      std::cout << "freqSlider: " << freqSlider.getValue() <<std::endl;
       audioProcessor.setFreq(freqSlider.getValue());
    };
    freqSlider.setDoubleClickReturnValue(true, kFreqDEF);
@@ -81,7 +80,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    envAttackSlider.setValue(audioProcessor.getEnvAttack());
    envAttackSlider.setRange(1.0, 30.0);
    envAttackSlider.onValueChange = [this] {
-//      std::cout << "envAttackSlider: " << envAttackSlider.getValue() <<std::endl;
       audioProcessor.setEnvAttack(envAttackSlider.getValue());
    };
    envAttackSlider.setDoubleClickReturnValue(true, kEnvDEF);
@@ -95,7 +93,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    bendSlider.setValue(audioProcessor.getBend());
    bendSlider.setRange(-2, 2);
    bendSlider.onValueChange = [this] {
-//      std::cout << "bendSlider: " << bendSlider.getValue() <<std::endl;
       audioProcessor.setBend(bendSlider.getValue());
    };
    bendSlider.setDoubleClickReturnValue(true, kBendDEF);
@@ -111,7 +108,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    vibratoFreqSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    vibratoFreqSlider.onValueChange = [this] {
-//      std::cout << "vibratoFreqSlider: " <<vibratoFreqSlider.getValue() <<std::endl;
       audioProcessor.setVibratoFreq(vibratoFreqSlider.getValue());
    };
    vibratoFreqSlider.setDoubleClickReturnValue(true, kVibratoFreqDEF);
@@ -126,7 +122,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    vibratoGainSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    vibratoGainSlider.onValueChange = [this] {
-//      std::cout << "vibratoGainSlider: " <<vibratoGainSlider.getValue() <<std::endl;
       audioProcessor.setVibratoGain(vibratoGainSlider.getValue());
    };
    vibratoGainSlider.setDoubleClickReturnValue(true, kVibratoGainDEF);
@@ -141,7 +136,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    reedStiffnessSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    reedStiffnessSlider.onValueChange = [this] {
-//      std::cout << "reedStiffness: " <<reedStiffnessSlider.getValue() <<std::endl;
       audioProcessor.setReedStiffness(reedStiffnessSlider.getValue());
    };
    reedStiffnessSlider.setDoubleClickReturnValue(true, kReedStiffDEF);
@@ -156,7 +150,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    bellOpeningSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    bellOpeningSlider.onValueChange = [this] {
-//      std::cout << "bellOpening: " <<bellOpeningSlider.getValue() <<std::endl;
       audioProcessor.setBellOpening(bellOpeningSlider.getValue());
    };
    bellOpeningSlider.setDoubleClickReturnValue(true, kBellOpeningDEF);
@@ -172,7 +165,6 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
    outGainSlider.setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
    // update the value whenever the slider changes
    outGainSlider.onValueChange = [this] {
-//      std::cout << "gain: " << outGainSlider.getValue() <<std::endl;
       auto gain = outGainSlider.getValue();
       audioProcessor.setOutGain(gain);
    };
@@ -274,9 +266,9 @@ void clarinetPluginAudioProcessorEditor::setMidiInput ()
 
 void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int chan, int note, float vel) {
    auto m = MidiMessage::noteOn (chan, note, vel);
-   // convert midi to freq
+   // convert MIDI num to freq. A4 (MIDI key 69 = 440 Hz)
    float freq = (440) * pow(2, float((note - 69) / 12.0));
-   std::cout << "MIDI key: " << note << ", freq: " << freq <<std::endl;
+   std::cout << "MIDI key: " << note << ", freq: " << freq << " vel: " << vel << " chan: " << chan << std::endl;
    gateButton.setState(juce::Button::buttonDown);
    freqSlider.setValue(freq);
 }
@@ -301,6 +293,20 @@ void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInp
       if (! isAddingFromMidiInput)
          keyboardState.processNextMidiEvent (message);
    }
+   if (message.isPitchWheel()) {
+      auto input = message.getPitchWheelValue();
+//      auto PITCH_WHEEL_MAX = 16383;
+//      auto PITCH_WHEEL_MIN = 0;
+      auto PITCH_WHEEL_CENTER = 8192;
+      auto bend = pow(4, (input - PITCH_WHEEL_CENTER)/4096*12);
+      std::cout << "input: " << input << " bend: " << bend << std::endl;
+      bendSlider.setValue(bend);
+   }
+
+   if (message.isController()) {
+      std::cout << message.getControllerValue() << std::endl;
+
+   }
 }
 
 
@@ -319,9 +325,10 @@ void clarinetPluginAudioProcessorEditor::resized()
    auto area = getLocalBounds();
    area.reduce(12,0);
    auto sliderWidth = 60;
-   area.removeFromBottom(8);
    area.removeFromTop(24);
    area.removeFromLeft(12);
+   midiKeyboard.setBounds(area.removeFromBottom(70));
+
    auto lineOne = area.removeFromTop(24);
    lineOne.removeFromLeft(sliderWidth);
    freqLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
@@ -331,7 +338,9 @@ void clarinetPluginAudioProcessorEditor::resized()
    lineOne.removeFromLeft(sliderWidth*0.5);
    envAttackLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
 
-   outGainSlider.setBounds(area.removeFromRight(sliderWidth));
+   auto gainSliderArea = area.removeFromRight(sliderWidth);
+   gainSliderArea.removeFromBottom(12);
+   outGainSlider.setBounds(gainSliderArea);
 
    lineOne.removeFromRight(sliderWidth*2);
    bellOpeningLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
@@ -340,17 +349,18 @@ void clarinetPluginAudioProcessorEditor::resized()
    //================== AUDIO VISUALIZER ==================//
    auto visualSpace = area.removeFromBottom(180);
    visualSpace.removeFromTop(32);
+   visualSpace.removeFromRight(30);
 
-   auto keySpace = visualSpace.removeFromBottom(70);
-   midiKeyboard.setBounds(keySpace);
    gateButton.setBounds(visualSpace.removeFromLeft(40).withSizeKeepingCentre(40, 20));
-   zoomSlider.setBounds(visualSpace.removeFromLeft(sliderWidth));
+   auto zoomSliderSpace = visualSpace.removeFromLeft(sliderWidth);
+   zoomSliderSpace.removeFromBottom(70);
+   zoomSlider.setBounds(zoomSliderSpace.removeFromLeft(sliderWidth));
    audioProcessor.audioVisualizer.setBounds(visualSpace.withSizeKeepingCentre(
                                                                visualSpace.getWidth(),
                                                                visualSpace.getHeight()));
 
-
-
+//   auto keySpace = visualSpace.removeFromBottom(70);
+//   midiKeyboard.setBounds(keySpace);
    auto sliderGroup = area.removeFromTop(280);
    sliderGroup.removeFromLeft(sliderWidth);
    freqSlider.setBounds(sliderGroup.removeFromLeft (sliderWidth));
