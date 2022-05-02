@@ -182,11 +182,13 @@ void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
    // compute one audio block of size buffer.getNumSamples and store in outputs
    fDSP->compute(buffer.getNumSamples(), NULL, outputs);
 
+
    for (int channel = 0; channel < totalNumOutputChannels; ++channel) {
-      for (int i = 0; i < buffer.getNumSamples(); i++) {
-         // link outputs to the audio output of processBlock
-         *buffer.getWritePointer(channel,i) = outputs[channel][i];
-      }
+      std::memcpy(buffer.getWritePointer(channel), outputs[channel], buffer.getNumSamples() * sizeof(float));
+//      for (int i = 0; i < buffer.getNumSamples(); i++) {
+//         // link outputs to the audio output of processBlock
+//         *buffer.getWritePointer(channel,i) = outputs[channel][i];
+//      }
    }
    // push buffer into component
    audioVisualizer.pushBuffer(buffer);
