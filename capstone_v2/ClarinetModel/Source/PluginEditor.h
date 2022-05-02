@@ -76,10 +76,7 @@ public:
    /// showMidiMessage() and playMidiMessage().
    void handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber,
                        float velocity) override;
-   // handles cases when the user clicks the midikeyboard in editor or uses an
-   // external midikeyboard
-//   void postMessageToList (const juce::MidiMessage& message, const juce::String& source);
-
+  
    // setting midi input
    void setMidiInput ();
 
@@ -116,9 +113,7 @@ private:
    juce::Label envLabel;
    juce::Label envAttackLabel;
    juce::Label bendLabel;
-   juce::Label vibratoLabel;
-   juce::Label vibratoFreqLabel;
-   juce::Label vibratoGainLabel;
+   juce::Label tremoloLabel;
    juce::Label reedLabel;
    juce::Label reedStiffnessLabel;
    juce::Label bellLabel;
@@ -126,11 +121,6 @@ private:
    juce::Label outGainLabel;
    juce::Label gateLabel;
    juce::Label zoomLabel;
-
-
-   std::vector<string> labelText = {"Freq", "Bend", "Rate", "Gain",
-                                    "Envelope\nAttack", "Reed\nStiffness",
-                                    "Bell\nOpening", "Out Gain", "Zoom"};
 
 
    //**************** MIDI variables ****************//

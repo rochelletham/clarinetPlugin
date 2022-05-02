@@ -177,11 +177,11 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
 
 void clarinetPluginAudioProcessorEditor::setLabels() {
    // TODO: add unit labels for the text
-   addAndMakeVisible(&vibratoLabel);
-   vibratoLabel.setText("Tremolo\nRate       Gain", dontSendNotification);
-//   vibratoLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
-   vibratoLabel.setJustificationType(Justification::centredBottom);
-   vibratoLabel.setSize(vibratoLabel.getWidth(), kTextHeight);
+   addAndMakeVisible(&tremoloLabel);
+   tremoloLabel.setText("Tremolo\nRate       Gain", dontSendNotification);
+//   tremoloLabel.setColour(juce::Label::outlineColourId,  juce::Colours::white);
+   tremoloLabel.setJustificationType(Justification::centredBottom);
+   tremoloLabel.setSize(tremoloLabel.getWidth(), kTextHeight);
 
    addAndMakeVisible(&freqLabel);
    freqLabel.setText("Freq", dontSendNotification);
@@ -351,7 +351,7 @@ void clarinetPluginAudioProcessorEditor::resized()
    freqLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
    bendLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
    lineOne.removeFromLeft(sliderWidth*0.5);
-   vibratoLabel.setBounds(lineOne.removeFromLeft(sliderWidth*2));
+   tremoloLabel.setBounds(lineOne.removeFromLeft(sliderWidth*2));
    lineOne.removeFromLeft(sliderWidth*0.5);
    envAttackLabel.setBounds(lineOne.removeFromLeft(sliderWidth));
 
