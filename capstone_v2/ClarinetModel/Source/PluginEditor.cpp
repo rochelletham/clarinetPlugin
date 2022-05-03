@@ -28,6 +28,7 @@ clarinetPluginAudioProcessorEditor::clarinetPluginAudioProcessorEditor (clarinet
    keyboardState.addListener(this);
    // set the range to concert G1 to C7 (displays as G#0 to C6 on screen)
    midiKeyboard.setAvailableRange(31, 96);
+
    addAndMakeVisible(midiKeyboard);
    // Pass the keyboard state to the keyboard component.
    keyboardState.addListener(this);
@@ -309,16 +310,17 @@ void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInp
       bendSlider.setValue(bend);
    }
 
-   // currently, the MIDI controller controls the reed stiffness slider
+   // currently, the MIDI controller controls the outgain slider
+   // this is to mimic the control of dynamics for an acoustic clarinet
    if (message.isController()) {
       auto input = message.getControllerValue();
       auto CONTROLLER_MAX = 127;
       auto CONTROLLER_MIN = 0;
-      auto sliderRange = reedStiffnessSlider.getMaximum() - reedStiffnessSlider.getMinimum();
-      // get the ratio of bendslider range to the MIDIkeyboard pitchwheel range
+      auto sliderRange = outGainSlider.getMaximum() - outGainSlider.getMinimum();
+      // get the ratio of outgainslider range to the MIDIkeyboard controller range
       auto slope = (sliderRange) / (CONTROLLER_MAX-CONTROLLER_MIN);
-      auto reed_param = slope * (input - CONTROLLER_MIN);
-      reedStiffnessSlider.setValue(reed_param);
+      auto vel_gain_param = slope * (input - CONTROLLER_MIN);
+      outGainSlider.setValue(vel_gain_param);
    }
 }
 

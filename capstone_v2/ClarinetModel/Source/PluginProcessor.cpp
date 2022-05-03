@@ -23,7 +23,7 @@ clarinetPluginAudioProcessor::clarinetPluginAudioProcessor()
 #endif
 {
    audioVisualizer.setRepaintRate(30);
-   // how many samples the component is going to draw
+   // Changes the number of samples that the visualiser keeps in its history
    // if give 32, will seem like the audiovisualizer is drawing really fast because
    // there aren't that many samples that need to be drawn/displayed
    // 256 samples will be easier to see
