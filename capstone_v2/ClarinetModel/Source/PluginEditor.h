@@ -109,6 +109,8 @@ private:
    juce::Slider outGainSlider;
    juce::Slider zoomSlider;
 
+   juce::Slider velSlider;
+
    juce::Label freqLabel;
    juce::Label envLabel;
    juce::Label envAttackLabel;

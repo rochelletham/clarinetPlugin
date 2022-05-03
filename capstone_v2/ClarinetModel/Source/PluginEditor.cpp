@@ -174,6 +174,13 @@ void clarinetPluginAudioProcessorEditor::setSliders() {
                                    kTextWidth, kNumHeight);
    outGainSlider.setNumDecimalPlacesToDisplay(2);
 
+
+   velSlider.setRange(0.0, 1.0);
+   velSlider.onValueChange = [this] {
+      auto vel = velSlider.getValue();
+      audioProcessor.setVelocityGain(vel);
+   };
+
 }
 
 void clarinetPluginAudioProcessorEditor::setLabels() {
@@ -268,7 +275,8 @@ void clarinetPluginAudioProcessorEditor::handleNoteOn(MidiKeyboardState*, int ch
    auto m = MidiMessage::noteOn (chan, note, vel);
    // convert MIDI num to freq. A4 (MIDI key 69 = 440 Hz)
    float freq = (440) * pow(2, float((note - 69) / 12.0));
-   std::cout << "MIDI key: " << note << ", freq: " << freq << " vel: " << vel << " chan: " << chan << std::endl;
+   std::cout << "MIDI key: " << note << ", freq: " << freq << " vel: " << vel << std::endl;
+   velSlider.setValue(vel);
    gateButton.setState(juce::Button::buttonDown);
    freqSlider.setValue(freq);
 }
@@ -319,8 +327,8 @@ void clarinetPluginAudioProcessorEditor::handleIncomingMidiMessage(juce::MidiInp
       auto sliderRange = outGainSlider.getMaximum() - outGainSlider.getMinimum();
       // get the ratio of outgainslider range to the MIDIkeyboard controller range
       auto slope = (sliderRange) / (CONTROLLER_MAX-CONTROLLER_MIN);
-      auto vel_gain_param = slope * (input - CONTROLLER_MIN);
-      outGainSlider.setValue(vel_gain_param);
+      auto gain_param = slope * (input - CONTROLLER_MIN);
+      outGainSlider.setValue(gain_param);
    }
 }
 

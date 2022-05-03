@@ -69,6 +69,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+   void setVelocityGain(float gain);
    //===========faust parameter functions==============================
 
    void setFreq(float freq);
@@ -117,6 +118,7 @@ public:
    // A specialized JUCE component that displays a wave form.
    juce::AudioVisualiserComponent audioVisualizer;
 private:
+   float velocityGain = 0.f;
    // wrapped as unique ptrs so when it is time to delete them, we don't
    // need to do anything additionally. (new/delete called under the hood)
    std::unique_ptr<MapUI> fUI;

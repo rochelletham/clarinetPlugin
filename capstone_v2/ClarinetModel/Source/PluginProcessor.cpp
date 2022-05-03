@@ -127,14 +127,14 @@ void clarinetPluginAudioProcessor::prepareToPlay (double sampleRate, int samples
 
 void clarinetPluginAudioProcessor::releaseResources()
 {
-//   for (int channel = 0; channel < 2; ++channel) {
-//      if (outputs[channel] != NULL) {
-//         delete[] outputs[channel];
-//      }
-//   }
-//   if (outputs != NULL) {
-//      delete[] outputs;
-//   }
+   for (int channel = 0; channel < 2; ++channel) {
+      if (outputs[channel] != NULL) {
+         delete[] outputs[channel];
+      }
+   }
+   if (outputs != NULL) {
+      delete[] outputs;
+   }
    audioVisualizer.clear();
 }
 
@@ -190,6 +190,7 @@ void clarinetPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
 //         *buffer.getWritePointer(channel,i) = outputs[channel][i];
 //      }
    }
+   buffer.applyGain(velocityGain);
    // push buffer into component
    audioVisualizer.pushBuffer(buffer);
 
@@ -221,9 +222,9 @@ void clarinetPluginAudioProcessor::setStateInformation (const void* data, int si
     // whose contents will have been created by the getStateInformation() call.
 }
 
-//float clarinetPluginAudioProcessor::getBufferSize() {
-//   return bufferSize;
-//}
+void clarinetPluginAudioProcessor::setVelocityGain(float gain) {
+   velocityGain = gain;
+}
 //========================faust set parameter functions=============================
 //void clarinetPluginAudioProcessor::setPressure(float pressure) {
 //   fUI->setParamValue("/clarinet/blower/pressure", pressure);
