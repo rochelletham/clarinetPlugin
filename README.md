@@ -1,7 +1,7 @@
 # CS+Music Capstone 2022 
 JUCE Physical Model Clarinet Plugin: takes FAUST's clarinet physical model DSP calculations and implements into a JUCE plugin. 
 
-![alt text](https://github.com/rochelletham/capstone/blob/main/plugin_pic.png?raw=true)
+![Alt text](plugin_pic.png?raw=true "Title")
 
 ## To run the plugin:
 1. Download the repo
