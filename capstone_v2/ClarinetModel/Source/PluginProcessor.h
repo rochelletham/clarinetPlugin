@@ -78,7 +78,7 @@ public:
    void setEnvAttack(float envAttack);
    void setSustain(float sustain);
 
-   void setVibratoFreq(float vibratoFreq); // TODO: will need to rename this..
+   void setVibratoFreq(float vibratoFreq); 
    void setVibratoGain(float vibratoGain);
    void setTubeLength(float tubeLength);
    void setReedStiffness(float reedStiffness);
