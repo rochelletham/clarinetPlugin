@@ -15,4 +15,4 @@ This project uses `JUCE` and the `FAUST` library.
 You can find more information on JUCE here (https://docs.juce.com/master/index.html)     
 You can find more information on FAUST through their website (https://faust.grame.fr/) and git repo (https://github.com/grame-cncm/faust)       
  
-advisor: Prof. Fieldsteel @UIUC
+Advisor: Professor Fieldsteel @UIUC
